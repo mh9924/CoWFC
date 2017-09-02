@@ -10,5 +10,5 @@ Front- and back-end website for the DWC network server emulator
 
 # Features
 - Stats page shows who is online by game/country
-- WIP ban history
 - Admin panel to manage bans, whitelists, and more
+- WIP ban history
