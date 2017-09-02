@@ -6,7 +6,9 @@ Front- and back-end website for the DWC network server emulator
 - Webserver (nginx or httpd)
 - PHP ≥ 7.0
 - MySQL
-- HTML5 templates: Landed and SBAdmin
+- HTML5 templates
+  - Landed
+  - SBAdmin
 
 # Features
 - Stats page shows who is online by game/country
