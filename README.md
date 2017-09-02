@@ -16,6 +16,10 @@ Front- and back-end website for the DWC network server emulator
 - Stats page shows who is online by game/country
 - Admin panel to manage bans, whitelists, and more
 
+# Screenshots
+
+## WIP
+
 # TODO
 - Public ban history
   - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
