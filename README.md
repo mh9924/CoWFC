@@ -19,4 +19,4 @@ Front- and back-end website for the DWC network server emulator
 # TODO
 - Public ban history
   - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
-- Install script for CoWFC tu automate new deployments - to some extent
+- Install script for CoWFC to automate new deployments - to some extent
