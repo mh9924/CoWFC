@@ -5,6 +5,8 @@ class Login {
 	private $password;
 	private $errors = array();
 	private $panel;
+	// You MUST enter your reCAPTCHA secret key here and
+	// the data-sitekey in the HTML at the bottom
 	private static $secret = "6LeSdC0UAAAAAIRwSCdWZVD2cFGqH0XucpepYelW";
 	
 	public function __construct(AdminPage $panel){
