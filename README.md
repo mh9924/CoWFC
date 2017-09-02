@@ -1,4 +1,4 @@
-# CoWFC-Web
+# CoWFC
 Front- and back-end website for the DWC network server emulator
 
 # Prerequisites
