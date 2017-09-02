@@ -2,7 +2,7 @@
 Front- and back-end website for the DWC network server emulator
 
 # Prerequisites
-- mh9924 / dwc\_network\_server\_emulator
+- mh9924/dwc\_network\_server\_emulator
 - Webserver (nginx or httpd)
 - PHP ≥ 7.0
 - MySQL
