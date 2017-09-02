@@ -16,7 +16,7 @@ final class UserList extends AdminPage {
 		$this->banned_list = $this->getBannedList();
 	}
 	
-	private function banIP(string $ip, string $reason='(none)'): void {
+	private function banIP(string $ip, string $reason='none'): void {
 		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, 99999999999)";
 		$stmt = $this->site->database->prepare($sql);
 		$stmt->bindParam(':ipaddr', $ip);
