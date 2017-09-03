@@ -8,7 +8,7 @@ final class UserList extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->banIP($_POST['identifier'], $_POST['reason']); } break;
+				case 'ban': if(isset($_POST['reason'])){ $this->banIP($_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']); } break;
 				case 'unban': $this->unbanIP($_POST['identifier']);break;
 			}
 		}
@@ -16,12 +16,15 @@ final class UserList extends AdminPage {
 		$this->banned_list = $this->getBannedList();
 	}
 	
-	private function banIP(string $ip, string $reason='(none)'): void {
-		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, 99999999999)";
+	private function banIP(string $ip, string $reason='(none)', int $time): void {
+		$ubtime = time() + $time;
+		if($time == 0) $ubtime = 99999999999;
+		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, :ubtime)";
 		$stmt = $this->site->database->prepare($sql);
 		$stmt->bindParam(':ipaddr', $ip);
 		$stmt->bindParam(':timestamp', time());
 		$stmt->bindParam(':reason', $reason);
+		$stmt->bindParam(':ubtime', $ubtime);
 		$stmt->execute();
 	}
 	
@@ -86,7 +89,7 @@ final class UserList extends AdminPage {
 			if(in_array($nasdata['ipaddr'], $this->banned_list)){
 				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='submit' class='btn btn-primary' value='Unban'></form>";
 			} else {
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='submit' class='btn btn-primary' value='Ban'></form>";
+				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban'></form>";
 			}
 			echo "</td>";
 			echo "<td>{$row[3]}</td>";

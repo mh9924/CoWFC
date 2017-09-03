@@ -5,10 +5,7 @@ class Login {
 	private $password;
 	private $errors = array();
 	private $panel;
-	
-	// You MUST enter your reCAPTCHA secret key in here and your
-	// site key in data-sitekey at the bottom of this file
-	private static $secret = "6LeSdC0UAAAAAIRwSCdWZVD2cFGqH0XucpepYelW";
+	private static $secret = "6LeRGy8UAAAAAAfCISNrHLw2f8RG_fj8WGaX84Ev";
 	
 	public function __construct(AdminPage $panel){
 		$this->panel = $panel;
@@ -31,6 +28,7 @@ class Login {
 	}
 	
 	private function doLogin(): void {
+		$robot = false;
 		if (!$this->verifyCaptcha()) {
 			$this->errors[] = "Invalid captcha.";
 			$robot = true;
@@ -113,7 +111,7 @@ class Login {
 <input type="password" name="password" id="password" maxlength="32" placeholder="Password">
 <br />
 <br />
-<center><div class="g-recaptcha" data-theme="dark" data-sitekey="6LeSdC0UAAAAAPo6jZpArsGe4itI57EI7lvcu9h-"></div></center>
+<center><div class="g-recaptcha" data-theme="dark" data-sitekey="6LeRGy8UAAAAAKdQOlbon3Afv6JpDLNDDzWPEQ_W"></div></center>
 <br />
 <button type="submit" class="pure-button pure-button-primary">Login</button>
 </body>
