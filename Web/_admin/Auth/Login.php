@@ -58,9 +58,7 @@ class Login {
 		$stmt->bindParam(':Username', $this->username);
 		$stmt->execute();
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);  # SQlite does not support rowCount() ...
-		if (!$result){
-			return false;
-		}
+		if (!$result) return false;
 		return true;
 	}
 	
