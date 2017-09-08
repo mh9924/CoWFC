@@ -62,10 +62,16 @@ final class UserList extends AdminPage {
 		return $banned;
 	}
 	
+	private function calcFC(int $profile_id, string $game_id='RMCJ'): string {
+		$csum = md5(pack('V',$profile_id).strrev($game_id),true);
+		$out = $profile_id | ( ord($csum) & 0xfe ) << 31;
+		return str_pad($out, 12, '0', STR_PAD_LEFT);
+	}
+	
 	private function buildBlacklistTable(): void {
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
 		echo '<thead><tr>';
-		echo "<th class='sorting-asc'>Name</th><th>Action</th><th>gameid</th><th>Enabled</th><th>newest dwc_pid</th><th>gsbrcd</th><th>userid</th><th>IP Address</th><th>Console MAC Address</th><th>Wii Friend Code</th><th>Console Serial Number (Wii ONLY)</th>";
+		echo "<th class='sorting-asc'>Name</th><th>Action</th><th>gameid</th><th>E</th><th>pid</th><th>gsbrcd</th><th>userid</th><th>IP Address</th><th>Console MAC</th><th>Friend Code</th><th>Wii Friend Code</th><th>Console Serial Number (Wii ONLY)</th>";
 		echo '</tr></thead>';
 		foreach($this->users as $row){
 			$nasdata = json_decode($row[2], true);
@@ -99,7 +105,8 @@ final class UserList extends AdminPage {
 			echo "<td>{$row[5]}</td>";
 			echo "<td>{$nasdata['ipaddr']}</td>";
 			echo "<td>{$nasdata['macadr']}</td>";
-			echo "<td>{$nasdata['cfc']}</td>";
+			echo "<td>".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."</td>";
+			echo "<td>".substr(chunk_split($nasdata['cfc'], 4, '-'),0,-1)."</td>";
 			echo "<td>{$nasdata['csnum']}</td>";
 			echo "</tr>";
 		}
