@@ -6,18 +6,9 @@ ROOT_UID="0"
 IP="" # Used for user input
 ip=$(curl -s icanhazip.com) # This variable shows the user's external IP
 home_ip=$(echo $SSH_CLIENT | awk '{ print $1}')
-apache="/etc/apache2/sites-available" # This is the directory where sites are kept in case they need to be disabled in Apache
-vh="$PWD/dwc_network_server_emulator/tools/apache-hosts" # This folder is in the root directory of this script and is required for it to copy the files over
-vh1="gamestats2.gs.nintendowifi.net.conf" # This is the first virtual host file
-vh2="gamestats.gs.nintendowifi.net.conf" # This is the second virtual host file
-vh3="nas-naswii-dls1-conntest.nintendowifi.net.conf" # This is the third virtual host file
-vh4="sake.gs.nintendowifi.net.conf" # This is the fourth virtual host file
-vh5="gamestats2.gs.nintendowifi.net.conf"
-vh6="gamestats.gs.nintendowifi.net.conf"
-vh7="nas-naswii-dls1-conntest.nintendowifi.net.conf"
-vh8="sake.gs.nintendowifi.net.conf"
 mod1="proxy" # This is a proxy mod that is dependent on the other 2
 mod2="proxy_http" # This is related to mod1
+mod3="php7.1"
 fqdn="localhost" # This variable fixes the fqdn error in Apache
 
 # Functions
@@ -189,7 +180,8 @@ sleep 2s
 echo "Updating & installing PHP 7.1 onto your system..."
 apt-get update
 apt-get install php7.1 -y
-# Now installing the other packages
+# Install the other required packages
+apt-get install apache2 python2.7 python-twisted dnsmasq git -y
 }
 function config_mysql {
 echo "We will now configure MYSQL server."
@@ -205,6 +197,25 @@ sed -i -e 's/passwordhere/$MYSQLPASSWD/g' /var/www/html/_site/AdminPage.php
 # Next we will install two more packages to make mysql and sqlite work with PHP
 apt-get install php7.1-mysql -y
 apt-get install sqlite php-sqlite3 -y
+# Now we will set up our first admin user
+echo "Now we're going to set up our first Admin Portal user."
+read -p "Please enter the username you wish to use: " firstuser
+read -p "Please enter the password you wish to use for $firstuser: " firstpasswd
+echo "Now hasing the password for $firstuser....."
+echo "Please copy the hash below to your clipboard and paste it into the upcoming prompt"
+/var/www/CoWFC/SQL/bcrypt-hash "$firstpasswd"
+read -p "Please paste the bcrypt hash (above) for the password you set for $firstuser: " firstpasswdhashed
+echo "We will now set the rank for $firstuser"
+echo "At the moment, this does nothing. However in later releases, we plan to restrict who can do what."
+echo "1: First Rank"
+echo "2: Second Rank"
+echo "3: Third Rank"
+read -p "Please enter a rank number [1-3]: " firstuserrank
+echo "That's all the informatio I'll need for now."
+echo "Setting up the cowfc users database"
+echo "create database cowfc" | mysql -u root -p$MYSQLPASSWD
+echo "Now inserting user $firstuser into the database with password $firstpasswd, hashed as $firstpasswdhashed."
+echo "insert into users values ($firstuser,$firstpasswdhashed,$firstuserrank)
 }
 
 function check_curl {
