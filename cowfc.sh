@@ -214,6 +214,8 @@ read -p "Please enter a rank number [1-3]: " firstuserrank
 echo "That's all the informatio I'll need for now."
 echo "Setting up the cowfc users database"
 echo "create database cowfc" | mysql -u root -p$MYSQLPASSWD
+echo "Now importing dumped cowfc database..."
+mysql -u root -p$MYSQLPASSWD cowfc < /var/www/CoWFC/SQL/cowfc.sql
 echo "Now inserting user $firstuser into the database with password $firstpasswd, hashed as $firstpasswdhashed."
 echo "insert into users values ($firstuser,$firstpasswdhashed,$firstuserrank)
 }
