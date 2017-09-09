@@ -172,7 +172,7 @@ service dnsmasq restart
 clear
 }
 
-functiion install_required_packages {
+function install_required_packages {
 # Add PHP 7.1 repo
 echo "Adding the PHP 7.1 repository. Please follow any prompts."
 add-apt-repository ppa:ondrej/php
@@ -217,7 +217,7 @@ echo "create database cowfc" | mysql -u root -p$MYSQLPASSWD
 echo "Now importing dumped cowfc database..."
 mysql -u root -p$MYSQLPASSWD cowfc < /var/www/CoWFC/SQL/cowfc.sql
 echo "Now inserting user $firstuser into the database with password $firstpasswd, hashed as $firstpasswdhashed."
-echo "insert into users values ($firstuser,$firstpasswdhashed,$firstuserrank)
+echo "insert into users values ($firstuser,$firstpasswdhashed,$firstuserrank)"
 }
 
 function check_curl {
