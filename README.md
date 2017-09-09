@@ -18,7 +18,14 @@ Front- and back-end website for the DWC network server emulator
 
 # Screenshots
 
-## WIP
+## Login Page
+![image](https://user-images.githubusercontent.com/10158714/30234202-09416e82-94c9-11e7-94ac-8aa6e8bf550d.png)
+## Main Dashboard
+![image](https://user-images.githubusercontent.com/10158714/30234212-212eadf2-94c9-11e7-8b01-24c10f67ce7a.png)
+## User List - contains all the info an admin would need to identify a player
+![image](https://user-images.githubusercontent.com/10158714/30234228-3f4ed5b4-94c9-11e7-814c-26d892d29707.png)
+
+## More screenshots coming soon as we get further with development.
 
 # TODO
 - Public ban history
