@@ -30,4 +30,32 @@ Front- and back-end website for the DWC network server emulator
 # TODO
 - Public ban history
   - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
-- Install script for CoWFC to automate new deployments - to some extent
+- Install script for CoWFC to automate new deployments - to some extent - we are already working on this and testing build steps
+- Integreate console banning for users with Admin GUI
+  - Maybe use the Consoles page to allow banning/unbanning of consoles?
+  - Two types of console bans
+    - Wii
+      - MAC Address
+      - Wii Friend Code (found on the Wii Message Board)
+      - Serial Number
+    - DS
+      - MAC Address
+      - Maybe BSSID too? - will make it trickier since a BSSID can't easily be changed afaik
+- Integrate User Ranking System
+  - Limit lower ranked users to what they can and can't do, same with high ranking users
+    - Lowest ranked users can only manage own bans, and not others
+    - Medium ranking users can manage own bans, as well as manage consoles
+    - Highest ranking users can manage everything that a Lowest and Medium ranking user can. This means that a Highest ranking users is a super users and can manage all bans, consoles, users of the admin panel, etc.
+- Integrate User Account Management Portal
+  - Only Highest ranking users can access this portal
+  - Add New Users
+  - Modify Users
+    - Change Username
+    - Reset Password
+    - Promote/Demote Rank
+      - Highest ranking users can not manage other highest ranking users to prevent abuse
+        - This means that if a highest ranking user wants to demote another, it will need to be done through the CLI
+          - Shell access is limited
+  - Delete Users
+    - Highest ranking users can not delete each other
+- More ideas I'm sure we haven't thought of yet :p
