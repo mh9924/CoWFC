@@ -5,7 +5,7 @@ class Login {
 	private $password;
 	private $errors = array();
 	private $panel;
-	private static $secret = "6LeRGy8UAAAAAAfCISNrHLw2f8RG_fj8WGaX84Ev";
+	private static $secret = "SECRET KEY HERE";
 	
 	public function __construct(AdminPage $panel){
 		$this->panel = $panel;
@@ -17,7 +17,7 @@ class Login {
 		if (!$this->panel->logged_in){
 			$this->buildLogin();
 		} else {
-			header("Location: http://cowfc.com/?page=admin&section=dashboard");
+			header("Location: /?page=admin&section=dashboard");
 		}
 	}
 	
