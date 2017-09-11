@@ -30,4 +30,19 @@ Front- and back-end website for the DWC network server emulator
 # TODO
 - Public ban history
   - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
-- Install script for CoWFC to automate new deployments - to some extent
+- Install script for CoWFC to automate new deployments - to some extent - we are already working on this and testing build steps
+- Integrate console banning for users with Admin GUI
+  - Maybe use the Consoles page to allow banning/unbanning of consoles?
+  - Two types of console bans
+    - Wii
+      - MAC Address
+      - Wii Friend Code (found on the Wii Message Board)
+      - Serial Number
+    - DS
+      - MAC Address
+      - Maybe BSSID too? - will make it trickier since a BSSID can't easily be changed afaik
+- Integrate moderator rank system
+- Integrate moderator account management portal
+  - Only accessible by highest ranked moderators
+  - Modification of users of the same rank must be done through shell
+- More ideas I'm sure we haven't thought of yet :p
