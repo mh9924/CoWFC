@@ -222,11 +222,8 @@ echo "Now inserting user $firstuser into the database with password $firstpasswd
 echo "insert into users (Username, Password, Rank) values ($firstuser,$firstpasswdhashed,$firstuserrank);" | mysql -u root -ppasswordhere cowfc
 }
 function re {
-# We want to make sure the user reads instructions
-until [ $reunderstand == "UNDERSTOOD" ] ; do
 echo "In order to log into your Admin interface, you will need to set up reCaptcha keys. This script will walk you through it"
-read -p "Please type I UNDERSTAND to continue: " reunderstand
-done
+echo "Please make an account over at https://www.google.com/recaptcha/"
 # Next we will ask the user for their secret key and site keys
 read -p "Please enter the SECRET KEY you got from setting up reCaptcha: " secretkey
 read -p "Please enter the SITE KEY you got from setting up reCaptcha: " sitekey
@@ -306,6 +303,7 @@ dns_config
 create_apache_vh_nintendo
 create_apache_vh_wiimmfi
 apache_mods # Enable reverse proxy mod and PHP 7.1
+install_website # Install the web contents for CoWFC
 config_mysql # We will set up the mysql password as "passwordhere" and create our first user
 re # Set up reCaptcha
 add-cron #Makes it so master server can start automatically on boot
