@@ -178,9 +178,18 @@ clear
 
 function install_required_packages {
 # Add PHP 7.1 repo
-echo "Adding the PHP 7.1 repository. Please follow any prompts."
-add-apt-repository ppa:ondrej/php
-sleep 2s
+if [ ! -f "/var/www/.php71-added" ] ; then
+    echo "Adding the PHP 7.1 repository. Please follow any prompts."
+    add-apt-repository ppa:ondrej/php
+    sleep 2s
+    echo "Creating file to tell the script you already added the repo"
+    touch "/var/www/.php71-added"
+    echo "I will not reboot your server to free up resources for the next phase"
+    reboot
+    exit
+else
+    echo "The PHP 7.1 repo is already added. If you believe this to ben an error, please type 'rm -rf /var/www/.php71-added' to remove the file which prevents the repository from being added again."
+fi
 echo "Updating & installing PHP 7.1 onto your system..."
 apt-get update
 apt-get install php7.1 -y
@@ -227,15 +236,11 @@ echo "Please make an account over at https://www.google.com/recaptcha/"
 # Next we will ask the user for their secret key and site keys
 read -p "Please enter the SECRET KEY you got from setting up reCaptcha: " secretkey
 read -p "Please enter the SITE KEY you got from setting up reCaptcha: " sitekey
-echo "PLEASE NOTE DOWN THE FOLLOWING BEFORE CONTINUING"
-echo "Your secret key is $secretkey"
-echo "Your site key is $sitekey"
-echo "Please place these in their respective locations under /var/www/html/_admin/Auth/Login.php"
-echo "To make it easier I will save this information under /tmp/re.txt. This way you can copy and paste."
-cat > /tmp/re.txt <<EOF
-My secret key is $secretkey
-My site key is $sitekey
-EOF
+echo "Thank you! I will now add your SECRET KEY and SITE KEY to /var/www/html/_admin/Auth/Login.php"
+# Replace SECRET_KEY_HERE with the secret key from our $secretkey variable
+sed -i -e "s/SECRET_KEY_HERE/$secretkey/g" /var/www/html/_admin/Auth/Login.php
+# Replace SITE_KEY_HERE with the site key from our $sitekey variable
+sed -i -e "s/SITE_KEY_HERE/$secretkey/g" /var/www/html/_admin/Auth/Login.php
 }
 function add-cron {
 echo "Checking if there is a cron available for $USER"
@@ -256,8 +261,7 @@ mkdir -p /cron-logs
 echo "Creating the cron job now!"
 echo "@reboot sh /start-altwfc.sh >/cron-logs/cronlog 2>&1" >/tmp/alt-cron
 crontab -u $USER /tmp/alt-cron
-echo "Done! Reboot now to see if master server comes up on its own."
-exit
+echo "Done!"
 fi
 }
 function install_website {
@@ -309,6 +313,9 @@ re # Set up reCaptcha
 add-cron #Makes it so master server can start automatically on boot
 echo "Thank you for installing CoWFC. One thing to note is that this script does not come with the HTML5 templates, so things may look messy. You may install whatever HTML5 templates you want and modify the webpages to your heart's content."
 echo "If you wish to access the admin GUI, please go to http://YOURSERVERADDRESS/?page=admin&section=Dashboard"
+until [ -z $pressentertoreboot ] ; do
+    read -p "Please press the ENTER key to reboot your server: " pressentertoreboot
+done
 exit 0
 # DO NOT PUT COMMANDS UNDER THIS FI
 fi
