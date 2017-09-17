@@ -141,7 +141,14 @@ a2ensite *.wiimmfi.de.conf
 service apache2 restart
 }
 function apache_mods {
-a2enmod $mod1 $mod2 $mod3
+a2enmod $mod1 $mod2
+service apache2 restart
+a2enmod $mod3
+if [ $? != "0" ] ; then
+a2dismod mpm_event
+a2enmod $mod3
+service apache2 restart
+fi
 service apache2 restart
 }
 
