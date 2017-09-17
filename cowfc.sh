@@ -184,12 +184,14 @@ if [ ! -f "/var/www/.php71-added" ] ; then
     sleep 2s
     echo "Creating file to tell the script you already added the repo"
     touch "/var/www/.php71-added"
-    echo "I will not reboot your server to free up resources for the next phase"
+    echo "I will now reboot your server to free up resources for the next phase"
     reboot
     exit
 else
     echo "The PHP 7.1 repo is already added. If you believe this to ben an error, please type 'rm -rf /var/www/.php71-added' to remove the file which prevents the repository from being added again."
 fi
+# Fix dpkg problems that happened somehow
+dpkg --configure -a
 echo "Updating & installing PHP 7.1 onto your system..."
 apt-get update
 apt-get install php7.1 -y
@@ -313,7 +315,7 @@ re # Set up reCaptcha
 add-cron #Makes it so master server can start automatically on boot
 echo "Thank you for installing CoWFC. One thing to note is that this script does not come with the HTML5 templates, so things may look messy. You may install whatever HTML5 templates you want and modify the webpages to your heart's content."
 echo "If you wish to access the admin GUI, please go to http://YOURSERVERADDRESS/?page=admin&section=Dashboard"
-until [ -z $pressentertoreboot ] ; do
+until [ ! -z $pressentertoreboot ] ; do
     read -p "Please press the ENTER key to reboot your server: " pressentertoreboot
 done
 exit 0
