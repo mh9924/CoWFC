@@ -315,9 +315,7 @@ re # Set up reCaptcha
 add-cron #Makes it so master server can start automatically on boot
 echo "Thank you for installing CoWFC. One thing to note is that this script does not come with the HTML5 templates, so things may look messy. You may install whatever HTML5 templates you want and modify the webpages to your heart's content."
 echo "If you wish to access the admin GUI, please go to http://YOURSERVERADDRESS/?page=admin&section=Dashboard"
-until [ ! -z $pressentertoreboot ] ; do
-    read -p "Please press the ENTER key to reboot your server: " pressentertoreboot
-done
+reboot
 exit 0
 # DO NOT PUT COMMANDS UNDER THIS FI
 fi
