@@ -5,7 +5,7 @@ class Login {
 	private $password;
 	private $errors = array();
 	private $panel;
-	private static $secret = "SECRET KEY HERE";
+	private static $secret = "SECRET_KEY_HERE";
 	
 	public function __construct(AdminPage $panel){
 		$this->panel = $panel;
@@ -109,7 +109,7 @@ class Login {
 <input type="password" name="password" id="password" maxlength="32" placeholder="Password">
 <br />
 <br />
-<center><div class="g-recaptcha" data-theme="dark" data-sitekey="6LeRGy8UAAAAAKdQOlbon3Afv6JpDLNDDzWPEQ_W"></div></center>
+<center><div class="g-recaptcha" data-theme="dark" data-sitekey="SITE_KEY_HERE"></div></center>
 <br />
 <button type="submit" class="pure-button pure-button-primary">Login</button>
 </body>
