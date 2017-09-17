@@ -140,6 +140,10 @@ echo "enabling...."
 a2ensite *.wiimmfi.de.conf
 service apache2 restart
 }
+function apache_mods {
+a2enmod $mod1 $mod2 $mod3
+service apache2 restart
+}
 
 function dns_config {
 # This function will configure dnsmasq
@@ -158,7 +162,7 @@ echo "It's also best practice to make this address static in your /etc/network/i
 echo "your LAN IP is"
 hostname  -I | cut -f1 -d' '
 echo "Your external IP is:"
-curl -s icanhazip.com
+curl -4 -s icanhazip.com
 echo "Please type in either your LAN or external IP"
 read -e IP
 cat >>/etc/dnsmasq.conf <<EOF # Adds your IP you provide to the end of the DNSMASQ config file
@@ -181,19 +185,17 @@ echo "Updating & installing PHP 7.1 onto your system..."
 apt-get update
 apt-get install php7.1 -y
 # Install the other required packages
-apt-get install apache2 python2.7 python-twisted dnsmasq git -y
+apt-get install apache2 python2.7 python-twisted dnsmasq git curl -y
 }
 function config_mysql {
 echo "We will now configure MYSQL server."
-read -p "Please enter the MYSQL password you would like to use for user 'root': " MYSQLPASSWD
-echo "Great! I will now install and configure MYSQL Server with the password you gave me."
-debconf-set-selections <<< 'mysql-server mysql-server/root_password password $MYSQLPASSWD'
-debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQLPASSWD'
+debconf-set-selections <<< 'mysql-server mysql-server/root_password password passwordhere'
+debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password passwordhere'
 apt-get -y install mysql-server
 # We will now set the new mysql password in the AdminPage.php file.
 # Do not change "passwordhere", as this will be the base for replacing it later
 # The below sed command has NOT been tested so we don't know if this will work or not.
-sed -i -e 's/passwordhere/$MYSQLPASSWD/g' /var/www/html/_site/AdminPage.php
+#sed -i -e 's/passwordhere/passwordhere/g' /var/www/html/_site/AdminPage.php
 # Next we will install two more packages to make mysql and sqlite work with PHP
 apt-get install php7.1-mysql -y
 apt-get install sqlite php-sqlite3 -y
@@ -213,18 +215,52 @@ echo "3: Third Rank"
 read -p "Please enter a rank number [1-3]: " firstuserrank
 echo "That's all the informatio I'll need for now."
 echo "Setting up the cowfc users database"
-echo "create database cowfc" | mysql -u root -p$MYSQLPASSWD
+echo "create database cowfc" | mysql -u root -ppasswordhere
 echo "Now importing dumped cowfc database..."
-mysql -u root -p$MYSQLPASSWD cowfc < /var/www/CoWFC/SQL/cowfc.sql
+mysql -u root -ppasswordhere cowfc < /var/www/CoWFC/SQL/cowfc.sql
 echo "Now inserting user $firstuser into the database with password $firstpasswd, hashed as $firstpasswdhashed."
 echo "insert into users values ($firstuser,$firstpasswdhashed,$firstuserrank)"
 }
-
-function check_curl {
-### Check if system has curl installed
-dpkg -L curl >/dev/null
-if [ $? != 0 ] ; then
-        apt-get update && apt-get install curl -y
+function re {
+# We want to make sure the user reads instructions
+until [ $reunderstand == "I UNDERSTAND" ] ; do
+echo "In order to log into your Admin interface, you will need to set up reCaptcha keys. This script will walk you through it"
+read -p "Please type I UNDERSTAND to continue: " reunderstand
+done
+# Next we will ask the user for their secret key and site keys
+read -p "Please enter the SECRET KEY you got from setting up reCaptcha: " secretkey
+read -p "Please enter the SITE KEY you got from setting up reCaptcha: " sitekey
+echo "PLEASE NOTE DOWN THE FOLLOWING BEFORE CONTINUING"
+echo "Your secret key is $secretkey"
+echo "Your site key is $sitekey"
+echo "Please place these in their respective locations under /var/www/html/_admin/Auth/Login.php"
+echo "To make it easier I will save this information under /tmp/re.txt. This way you can copy and paste."
+cat > /tmp/re.txt <<EOF
+My secret key is $secretkey
+My site key is $sitekey
+EOF
+}
+function add-cron {
+echo "Checking if there is a cron available for $USER"
+crontab -l -u $USER |grep "@reboot sh /start-altwfc.sh >/cron-logs/cronlog 2>&1"
+if [ $? != "0" ] ; then
+echo "No cron job is currently installed"
+echo "Working the magic. Hang tight!"
+cat > /start-altwfc.sh <<EOF
+#!/bin/sh
+cd /
+chmod 777 /var/www/dwc_network_server_emulator -R
+cd var/www/dwc_network_server_emulator
+python master_server.py
+cd /
+EOF
+chmod 777 /start-altwfc.sh
+mkdir -p /cron-logs
+echo "Creating the cron job now!"
+echo "@reboot sh /start-altwfc.sh >/cron-logs/cronlog 2>&1" >/tmp/alt-cron
+crontab -u $USER /tmp/alt-cron
+echo "Done! Reboot now to see if master server comes up on its own."
+exit
 fi
 }
 
@@ -238,10 +274,36 @@ fi
 
 # Determine if our script can run
 if [ $CANRUN == "TRUE" ] ; then
-# Our script can run since we are on Ubuntu
-# Put commands or functions on these lines to continue with script execution.
-# The first thing we will do is to update our package repos
-apt-get update
+    # Our script can run since we are on Ubuntu
+    # Put commands or functions on these lines to continue with script execution.
+    # The first thing we will do is to update our package repos but let's also make sure that the user is running the script in the proper directory /var/www
+    if [ $PWD == "/var/www" ] ; then
+        apt-get update
+        # Let's install required packages first.
+        install_required_packages
+        # Then we will check to see if the Gits for CoWFC and dwc_network_server_emulator exist
+        if [ ! -d "/var/www/CoWFC" ] ; then
+            echo "Git for CoWFC does not exist in /var/www/"
+            git clone https://github.com/mh9924/CoWFC.git
+        fi
+        if [ ! -d "/var/www/dwc_network_server_emulator" ] ; then
+            echo "Git for dwc_network_server_emulator does not exist in /var/www"
+            git clone https://github.com/mh9924/dwc_network_server_emulator.git
+            echo "Setting proper file permissions"
+            chmod 777 /var/www/dwc_network_server_emulator/ -R
+        fi
+# Configure DNSMASQ
+dns_config
+# Let's set up Apache now
+create_apache_vh_nintendo
+create_apache_vh_wiimmfi
+apache_mods # Enable reverse proxy mod and PHP 7.1
+config_mysql # We will set up the mysql password as "passwordhere" and create our first user
+re # Set up reCaptcha
+add-cron #Makes it so master server can start automatically on boot
+
+# DO NOT PUT COMMANDS UNDER THIS FI
+fi
 else
     echo "Sorry, you do not appear to be running a supported Opperating System."
     echo "Please make sure you are running the latest version of Ubuntu and try again!"
