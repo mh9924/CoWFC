@@ -219,7 +219,7 @@ echo "create database cowfc" | mysql -u root -ppasswordhere
 echo "Now importing dumped cowfc database..."
 mysql -u root -ppasswordhere cowfc < /var/www/CoWFC/SQL/cowfc.sql
 echo "Now inserting user $firstuser into the database with password $firstpasswd, hashed as $firstpasswdhashed."
-echo "insert into users (Username, Password, Rank) values ($firstuser,$firstpasswdhashed,$firstuserrank);" | mysql -u root -ppasswordhere cowfc
+echo "insert into users (Username, Password, Rank) values ('$firstuser','$firstpasswdhashed','$firstuserrank');" | mysql -u root -ppasswordhere cowfc
 }
 function re {
 echo "In order to log into your Admin interface, you will need to set up reCaptcha keys. This script will walk you through it"
@@ -264,7 +264,7 @@ function install_website {
 # First we will delete evertyhing inside of /var/www/html
 rm -rf /var/www/html/*
 # Then we will copy the website files from our CoWFC Git
-cp /var/www/CoWFC/Web/* /var/www/html
+cp /var/www/CoWFC/Web/* /var/www/html -R
 # Let's restart Apache now
 service apache2 restart
 }
