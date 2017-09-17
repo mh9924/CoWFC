@@ -242,7 +242,7 @@ echo "Thank you! I will now add your SECRET KEY and SITE KEY to /var/www/html/_a
 # Replace SECRET_KEY_HERE with the secret key from our $secretkey variable
 sed -i -e "s/SECRET_KEY_HERE/$secretkey/g" /var/www/html/_admin/Auth/Login.php
 # Replace SITE_KEY_HERE with the site key from our $sitekey variable
-sed -i -e "s/SITE_KEY_HERE/$secretkey/g" /var/www/html/_admin/Auth/Login.php
+sed -i -e "s/SITE_KEY_HERE/$sitekey/g" /var/www/html/_admin/Auth/Login.php
 }
 function add-cron {
 echo "Checking if there is a cron available for $USER"
