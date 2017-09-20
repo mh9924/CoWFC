@@ -12,7 +12,7 @@ Front- and back-end website for the DWC network server emulator
   - Landed
   - SBAdmin
 # How to Build
-First, you will need to be running on Ubuntu. Otherwise the script will not run. Please run the following comments below to get started:
+First, you will need to be running on Ubuntu. Otherwise the [setup script](https://github.com/kyle95wm/cowfc_installer) will not run. Please run the following comments below to get started:
 
 `mkdir /var/www && cd /var/www && wget https://raw.githubusercontent.com/kyle95wm/cowfc_installer/master/cowfc.sh && chmod +x cowfc.sh && ./cowfc.sh`
 # Features
