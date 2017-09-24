@@ -104,7 +104,7 @@ class Login {
 <mark style="background-color: red;"><?php $this->buildErrors(); ?></mark>
 <br />
 <form action="" method="post" class="pure-form">
-<input type="text" name="username" id="username" maxlength="12" placeholder="Username">
+<input type="text" name="username" id="username" maxlength="24" placeholder="Username">
 <br />
 <input type="password" name="password" id="password" maxlength="32" placeholder="Password">
 <br />
