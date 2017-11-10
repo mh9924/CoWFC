@@ -69,7 +69,7 @@ class Header {
 
 			<!-- Header -->
 				<header id="header">
-					<h1 id="logo"><a href="/">CoWFC</a></h1>
+					<h1 id="logo"><a href="/">echo $this->page->site->config[“main”][“name”];C</a></h1>
 					<?php $this->generateNav(); ?>
 				</header>
 <?php
