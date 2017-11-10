@@ -1,21 +1,26 @@
 <?php
 include($_SERVER["DOCUMENT_ROOT"] . '/_drivers/Database.php');
 
+$s = new PageController("config.ini");
+$s->loadPage();
+
 class PageController {
-	private $requested_page;
+	public $config;
 	public $database;
-	public $pages = array();
 	public $mode;
+	public $pages = array();
+	private $requested_page;
 	
-	public function __construct(){
-		$this->database = new Database();
-		$this->database->connect();
-		$this->database = $this->database->getConn();
+	public function __construct(string $config){
+		$this->loadConfiguration($config);
+		$this->loadDatabase();
+		if (!$this->config['main']['debug'])
+			error_reporting(0);
 		$this->requested_page = 'Home';
 		$this->mode = 'pages';
 		if(isset($_GET['page'])){
 			$this->requested_page = ucwords($_GET['page']);
-			if($this->requested_page == 'Admin'){
+			if($this->requested_page == 'Admin' && isset($_GET['section'])){
 				$this->requested_page = ucwords($_GET['section']);
 				$this->mode = 'admin';
 			}
@@ -26,6 +31,20 @@ class PageController {
 				unset($this->pages[$i]);
 			}
 		}
+	}
+	
+	private function loadConfiguration($config): void {
+		try {
+			$this->config = parse_ini_file($config, true);
+		} catch (Exception $e){
+			echo "Could not find configuration file. $e";
+		}
+	}
+	
+	private function loadDatabase(): void {
+		$this->database = new Database();
+		$this->database->connect("sqlite:".$this->config['pages']['dwc_db_path']);
+		$this->database = $this->database->getConn();
 	}
 	
 	public function loadPage(): Page {
@@ -41,7 +60,4 @@ class PageController {
 		die("Page not found.");
 	}
 }
-
-$s = new PageController();
-$s->loadPage();
 ?>

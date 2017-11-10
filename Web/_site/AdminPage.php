@@ -11,8 +11,9 @@ abstract class AdminPage extends Page {
 	abstract protected function buildAdminPage();
 	
 	public function __construct(PageController $site) {
+		$this->site = $site;
 		session_start();
-		$this->initSQlite();
+		$this->initMySQL();
 		if(isset($_SESSION['username']))
 			$this->logged_in = true;
 			# $this->user = new User($_SESSION);
@@ -23,11 +24,17 @@ abstract class AdminPage extends Page {
 		parent::__construct($site);
 	}
 	
-	private function initSQlite(): void {
+	private function initMySQL(): void {
 		$this->udatabase = new Database();
-		$this->udatabase->connect('','root','passwordhere');
+		$config = $this->site->config['admin'];
+		$this->udatabase->connect($config['db_host'],$config['db_name'],$config['db_user'],$config['db_pass']);
 		$this->udatabase = $this->udatabase->getConn();
-		$stmt = $this->udatabase->prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, Username VARCHAR(20), Password BINARY(60), Rank INT(1))");
+		$stmt = $this->udatabase->prepare("CREATE TABLE IF NOT EXISTS users 
+											(id INTEGER AUTO_INCREMENT, 
+											Username VARCHAR(20), 
+											Password BINARY(60), 
+											Rank INT(1),
+											PRIMARY KEY (id))");
 		$stmt->execute();
 	}
 	

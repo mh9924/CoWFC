@@ -4,17 +4,17 @@ class Database {
 	private $username;
 	private $password;
 	
-	public function connect(string $dir='sqlite:/var/www/dwc_network_server_emulator/gpcm.db', string $username='', string $password=''): PDO {
+	public function connect(string $host, string $db='', string $username='', string $password=''): PDO {
 		if ($this->conn == null){
 			try {
-				if(!empty($username) && !empty($password)){
+				if(!empty($username) || !empty($password)){
 					// We aren't using garbage.
-					$this->conn = new PDO('mysql:host=localhost;dbname=cowfc', $username, $password);
+					$this->conn = new PDO("mysql:host=$host;dbname=$db", $username, $password);
 					$this->username = $username;
 					$this->password = $password;
 				} else {
 					// We are using garbage.
-					$this->conn = new PDO($dir);
+					$this->conn = new PDO("$host");
 				}
 			} catch (PDOException $e) {
 				$error = $e->getMessage();
