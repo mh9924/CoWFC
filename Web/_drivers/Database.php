@@ -14,7 +14,7 @@ class Database {
 					$this->password = $password;
 				} else {
 					// We are using garbage.
-					$this->conn = new PDO("$host");
+					$this->conn = new PDO($host);
 				}
 			} catch (PDOException $e) {
 				$error = $e->getMessage();
