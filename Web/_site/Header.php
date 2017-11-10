@@ -27,13 +27,15 @@ class Header {
 	}
 	
 	public function generateAdminNav(): void {
-		echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">';
-		echo '<a class="navbar-brand" href="#"><img src="images/cowfc-panel.png" width="96" height="32"></a>';
-		echo '<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarRepsonsive" aria-expanded="false" aria-label="Toggle navigation">';
-		echo '<span class="navbar-toggler-icon"></span>';
-		echo '</button>';
-		echo '<div class="collapse navbar-collapse" id="navbarResponsive">';
-		echo '<ul class="navbar-nav navbar-sidenav">';
+		?>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<a class="navbar-brand" href="#"><img src="images/cowfc-panel.png" width="96" height="32"></a>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarRepsonsive" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+		<ul class="navbar-nav navbar-sidenav">
+		<?php
 		foreach($this->page->site->pages as $page){
 			$page = substr($page, 0, -4);
 			echo "<li class='nav-item".($page == $this->page->meta_title ? ' active' : '')."' data-toggle='tooltip' data-placement='right' title='{$page}'>";
@@ -43,12 +45,14 @@ class Header {
 			echo "</a>";
 			echo "</li>";
 		}
-		echo '</ul>';
-		echo '<ul class="navbar-nav sidenav-toggler"><li class="nav-item"><a class="nav-link text-center" id="sidenavToggler"><i class="fa fa-fw fa-angle-left"></i></a></li></ul>';
-		echo '<ul class="navbar-nav ml-auto">';
-		echo '<li class="nav-item"><a class="nav-link" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-fw fa-sign-out"></i>Logout</a></li></ul>';
-		echo '</div>';
-		echo '</nav>';
+		?>
+		</ul>
+		<ul class="navbar-nav sidenav-toggler"><li class="nav-item"><a class="nav-link text-center" id="sidenavToggler"><i class="fa fa-fw fa-angle-left"></i></a></li></ul>
+		<ul class="navbar-nav ml-auto">
+		<li class="nav-item"><a class="nav-link" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-fw fa-sign-out"></i>Logout</a></li></ul>
+		</div>
+		</nav>
+		<?php
 	}
 			
 	public function build(): void {
@@ -69,7 +73,7 @@ class Header {
 
 			<!-- Header -->
 				<header id="header">
-					<h1 id="logo"><a href="/">echo $this->page->site->config[“main”][“name”];C</a></h1>
+					<h1 id="logo"><a href="/"><?php echo $this->page->site->config["main"]["name"]; ?></a></h1>
 					<?php $this->generateNav(); ?>
 				</header>
 <?php
