@@ -13,7 +13,7 @@ final class Home extends Page {
 <section id="banner" style="">
 	<div class="content">
 		<header>
-			<h2>Welcome to CoWFC</h2>
+			<h2>Welcome to echo $this->site->config[“main”][“name”];</h2>
 			<p>
 			<strong>The #1 Wiimmfi alternative!</strong><br>
 			Join the official Discord server:<br>
