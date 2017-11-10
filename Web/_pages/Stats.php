@@ -18,7 +18,12 @@ final class Stats extends Page {
 		$this->sort = 'Game';
 		if(isset($_GET['sort']) && in_array($_GET['sort'], $this->sorts))
 			$this->sort = $_GET['sort'];
-		$this->games = json_decode(file_get_contents("http://localhost:9001/json"), true);
+		$json = @file_get_contents("http://localhost:9001/json");
+		if($json === false){
+			echo "Failed to open gamestats page.";
+			return;
+		}
+		$this->games = json_decode($json, true);
 	}
 	
 	private function initTitles(): void {
