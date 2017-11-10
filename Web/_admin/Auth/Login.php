@@ -30,7 +30,7 @@ class Login {
 	
 	private function doLogin(): void {
 		$robot = false;
-		if (!$this->verifyCaptcha()) {
+		if ($this->panel->site->config["admin"]["recaptcha_enabled"] && !$this->verifyCaptcha()) {
 			$this->errors[] = "Invalid captcha.";
 			$robot = true;
 		}
