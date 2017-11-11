@@ -9,7 +9,7 @@ final class Contact extends Page {
 	<div class="container">
 		<header class="major">
 			<h2><?php echo $this->meta_title; ?></h2>
-			<p>Get in touch with the CoWFC team.</p>
+			<p>Get in touch with the <?php echo $this->site->config["main"]["name"]; ?> team.</p>
 		</header>
 
 		<!-- Content -->
