@@ -33,7 +33,6 @@ First, you will need to be running on Ubuntu. Otherwise the [setup script](https
 # TODO
 - Public ban history
   - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
-- Install script for CoWFC to automate new deployments - to some extent - we are already working on this and testing build steps
 - Integrate console banning for users with Admin GUI
   - Maybe use the Consoles page to allow banning/unbanning of consoles?
   - Two types of console bans
