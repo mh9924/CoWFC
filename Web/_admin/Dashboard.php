@@ -14,8 +14,8 @@ final class Dashboard extends AdminPage {
           <li class="breadcrumb-item active"><?php echo $this->meta_title; ?></li>
         </ol>
 
-        Welcome to the CoWFC admin panel!
-If you are seeing this page, it means you have Moderator access to CoWFC. By using this page, you agree to use it responsibly. If you are found abusing the system, your access to it will be revoked. This panel will allow you to:
+        Welcome to the <?php echo $this->site->config["main"]["name"]; ?> admin panel!
+If you are seeing this page, it means you have Moderator access to <?php echo $this->site->config["main"]["name"]; ?>. By using this page, you agree to use it responsibly. If you are found abusing the system, your access to it will be revoked. This panel will allow you to:
         <li>Ban IPs</li>
         <li>Ban Consoles</li>
         <li>Manage existing bans

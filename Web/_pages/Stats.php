@@ -103,7 +103,7 @@ final class Stats extends Page {
 	<div class="container">
 		<header class="major">
 			<h2><?php echo $this->meta_title; ?></h2>
-			<p>Statistics of users currently playing CoWFC</p>
+			<p>Statistics of users currently playing <?php echo $this->site->config["main"]["name"]; ?></p>
 		</header>
 
 		<!-- Content -->

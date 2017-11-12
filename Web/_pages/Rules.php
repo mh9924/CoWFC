@@ -9,7 +9,7 @@ final class Rules extends Page {
 	<div class="container">
 		<header class="major">
 			<h2><?php echo $this->meta_title; ?></h2>
-			<p>CoWFC is based off the hacking element, but legits are also welcome.</p>
+			<p><?php echo $this->site->config["main"]["name"]; ?> is based off the hacking element, but legits are also welcome.</p>
 		</header>
 
 		<!-- Content -->
@@ -25,7 +25,7 @@ final class Rules extends Page {
 						<li>Manipulating network traffic</li>
 						<li>Manipulating and abusing console identifiers for ban circomvention</li>
 					</ul>
-				By using CoWFC, you agree to abide by these rules or else you could be banned from accessing the server.
+				By using <?php echo $this->site->config["main"]["name"]; ?>, you agree to abide by these rules or else you could be banned from accessing the server.
 				</p>					
 			</section>
 
