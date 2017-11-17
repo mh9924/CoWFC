@@ -110,8 +110,16 @@ class Login {
 <input type="password" name="password" id="password" maxlength="32" placeholder="Password">
 <br />
 <br />
-<center><div class="g-recaptcha" data-theme="dark" data-sitekey="SITE_KEY_HERE"></div></center>
-<br />
+<?php
+if ($this->panel->site->config["admin"]["recaptcha_enabled"]){
+?>
+	<center>
+	<div class="g-recaptcha" data-theme="dark" data-sitekey="<?php echo $this->panel->site->config["admin"]["recaptcha_site"]; ?>"></div>
+	</center>
+	<br />
+<?php
+}
+?>
 <button type="submit" class="pure-button pure-button-primary">Login</button>
 </body>
 </html>
