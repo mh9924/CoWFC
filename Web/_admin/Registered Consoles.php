@@ -4,7 +4,6 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 final class RegisteredConsoles extends AdminPage {
 	private $reg_consoles = array();
 	private $pen_consoles = array();
-    private $banned_consoles = array();
 	
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
@@ -12,13 +11,10 @@ final class RegisteredConsoles extends AdminPage {
 				case 'add': $this->regAndActivateConsole($_POST['identifier']);break;
 				case 'act': $this->activateConsole($_POST['identifier']);break;
 				case 'rm': $this->unregisterConsole($_POST['identifier']);break;
-				case 'ban':$this->banConsole($_POST['identifier']);break;
-                case 'unban':$this->unbanConsole($_POST['identifier']);break;
 			}
 		}
 		$this->reg_consoles = $this->getRegisteredConsoles();
 		$this->pen_consoles = $this->getPendingConsoles();
-        $this->banned_consoles = $this->getBannedConsoles();
 	}
 	
 	private function getRegisteredConsoles(): array {
@@ -42,18 +38,6 @@ final class RegisteredConsoles extends AdminPage {
 		$stmt->bindParam(':macadr', $console);
 		$stmt->execute();
 	}
-	private function banConsole(string $console): void {
-                $sql = "INSERT INTO console_macadr_banned (macadr) VALUES (:macadr)";
-                $stmt = $this->site->database->prepare($sql);
-                $stmt->bindParam(':macadr', $console);
-                $stmt->execute();
-        }
-    private function unbanConsole(string $console): void {
-        $sql = "DELETE FROM console_macadr_banned WHERE macadr = :macadr";
-        $stmt = $this->site->database->prepare($sql);
-        $stmt->bindParam(':macadr', $console);
-        $stmt->execute();
-    }
 	
 	private function unregisterConsole(string $console): void {
 		$sql = "DELETE FROM pending WHERE macadr = :macadr";
@@ -73,17 +57,11 @@ final class RegisteredConsoles extends AdminPage {
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
-    private function getBannedConsoles(): array {
-        $sql = "SELECT * FROM console_macadr_banned";
-        $stmt = $this->site->database->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
 	
 	private function buildRegisteredTable(): void {
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;" id="dataTable">';
 		echo '<thead><tr>';
-		echo "<th class='sorting-asc'>MAC Address</th><th>Unregister</th><th>Ban</th>";
+		echo "<th class='sorting-asc'>MAC Address</th><th>Unregister</th>";
 		echo '</tr></thead>';
 		foreach($this->reg_consoles as $row){
 			echo "<tr>";
@@ -92,9 +70,6 @@ final class RegisteredConsoles extends AdminPage {
 			echo "</td>";
 			echo "<td>";
 			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='rm'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Unregister'></form>";
-			echo "</td>";
-			echo "<td>";
-			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Ban'></form>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -120,23 +95,6 @@ final class RegisteredConsoles extends AdminPage {
 		}
 		echo "</table>";
 	}
-    private function buildBannedTable(): void {
-        echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
-        echo '<thead><tr>';
-        echo "<th class='sorting-asc'>MAC Address</th><th>Unban</th>";
-        echo '</tr></thead>';
-        foreach($this->banned_consoles as $row){
-            echo "<tr>";
-            echo "<td>";
-            echo $row[0];
-            echo "</td>";
-            echo "<td>";
-            echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Unban'></form>";
-            echo "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-    }
 	
 	protected function buildAdminPage(): void {
 		$this->handleReq();
@@ -173,17 +131,6 @@ final class RegisteredConsoles extends AdminPage {
 				</div>
 			</div>
 		</div>
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fa fa-table"></i>
-                Banned Consoles
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <?php $this->buildBannedTable(); ?>
-                </div>
-            </div>
-        </div>
 
       </div>
       <!-- /.container-fluid -->
