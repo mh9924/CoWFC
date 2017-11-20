@@ -5,7 +5,7 @@ class Login {
 	private $password;
 	private $errors = array();
 	private $panel;
-	private static $secret;
+	private $secret;
 	
 	public function __construct(AdminPage $panel){
 		$this->panel = $panel;

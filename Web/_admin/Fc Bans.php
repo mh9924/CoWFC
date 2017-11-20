@@ -4,19 +4,12 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 final class FcBans extends AdminPage {
 	private $fc_bans = array();
 	
-	private function getFCBans(): array {
-		$sql = "SELECT * from console_cfc_bans";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
 	private function buildFCTable(): void {
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>cfc</th><th>Ban/Unban cfc</th>";
 		echo '</tr></thead>';
-		$this->fc_bans = $this->getFCBans();
+		$this->fc_bans = $this->site->database->getFCBans();
 		foreach($this->fc_bans as $row){
 			echo "<tr>";
 			echo "<td>";

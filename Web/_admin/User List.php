@@ -8,58 +8,12 @@ final class UserList extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->banIP($_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']); } break;
-				case 'unban': $this->unbanIP($_POST['identifier']);break;
+				case 'ban': if(isset($_POST['reason'])){ $this->site->database->banIP($_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']); } break;
+				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
 			}
 		}
-		$this->users = $this->getUsers();
-		$this->banned_list = $this->getBannedList();
-	}
-	
-	private function banIP(string $ip, string $reason='none', int $time): void {
-		$ubtime = time() + $time;
-		if($time == 0) $ubtime = 99999999999;
-		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, :ubtime)";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':ipaddr', $ip);
-		$stmt->bindParam(':timestamp', time());
-		$stmt->bindParam(':reason', $reason);
-		$stmt->bindParam(':ubtime', $ubtime);
-		$stmt->execute();
-	}
-	
-	private function unbanIP(string $ip): void {
-		$sql = "DELETE FROM ip_banned WHERE ipaddr = :ipaddr";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':ipaddr', $ip);
-		$stmt->execute();
-	}
-	
-	private function getUsers(): array {
-		$sql = "SELECT users.profileid,enabled,data,users.gameid,console,users.userid 
-				FROM nas_logins 
-				INNER JOIN users 
-				ON users.userid = nas_logins.userid 
-				INNER JOIN (
-					SELECT max(profileid) newestpid,userid,gameid,devname 
-					FROM users GROUP BY userid,gameid) 
-				ij on ij.userid = users.userid and 
-				users.profileid = ij.newestpid 
-				ORDER BY users.gameid";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
-	private function getBannedList(): array {
-		$sql = "SELECT * FROM IP_BANNED WHERE ubtime > ".time();
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		$banned = array();
-		foreach($stmt->fetchAll() as $row){
-			$banned[] = $row[0];
-		}
-		return $banned;
+		$this->users = $this->site->database->getUsers();
+		$this->banned_list = $this->site->database->getBannedList();
 	}
 	
 	private function calcFC(int $profile_id, string $game_id='RMCJ'): string {
@@ -84,9 +38,9 @@ final class UserList extends AdminPage {
 			if(isset($ingamesn)){
 				$ingamesn = base64_decode($ingamesn);
 				if($is_console){
-					$ingamesn = iconv('UTF-16BE', 'UTF-8', $ingamesn);
+					$ingamesn = @iconv('UTF-16BE', 'UTF-8', $ingamesn);
 				} else {
-					$ingamesn = iconv('UTF-16LE', 'UTF-8', $ingamesn);
+					$ingamesn = @iconv('UTF-16LE', 'UTF-8', $ingamesn);
 				}
 			}
 			echo "<tr>";
@@ -106,8 +60,13 @@ final class UserList extends AdminPage {
 			echo "<td>{$nasdata['ipaddr']}</td>";
 			echo "<td>{$nasdata['macadr']}</td>";
 			echo "<td>".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."</td>";
-			echo "<td>".substr(chunk_split($nasdata['cfc'], 4, '-'),0,-1)."</td>";
-			echo "<td>{$nasdata['csnum']}</td>";
+			if(isset($nasdata['cfc']) && isset($nasdata['csnum'])){ // Wii only
+				echo "<td>".substr(chunk_split($nasdata['cfc'], 4, '-'),0,-1)."</td>";
+				echo "<td>{$nasdata['csnum']}</td>";
+			} else {
+				echo "<td>N/A</td>";
+				echo "<td>N/A</td>";
+			}
 			echo "</tr>";
 		}
 		echo "</table>";

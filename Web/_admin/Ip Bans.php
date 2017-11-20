@@ -7,34 +7,11 @@ final class IpBans extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->banIP($_POST['identifier'], $_POST['reason']); } break;
-				case 'unban': $this->unbanIP($_POST['identifier']);break;
+				case 'ban': if(isset($_POST['reason'])){ $this->site->database->banIP($_POST['identifier'], $_POST['reason']); } break;
+				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
 			}
 		}
-		$this->ip_bans = $this->getIPBans();
-	}
-	
-	private function banIP(string $ip, string $reason='none'): void {
-		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, 99999999999)";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':ipaddr', $ip);
-		$stmt->bindParam(':timestamp', time());
-		$stmt->bindParam(':reason', $reason);
-		$stmt->execute();
-	}
-	
-	private function unbanIP(string $ip): void {
-		$sql = "DELETE FROM ip_banned WHERE ipaddr = :ipaddr";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':ipaddr', $ip);
-		$stmt->execute();
-	}
-	
-	private function getIPBans(): array {
-		$sql = "SELECT * FROM IP_BANNED WHERE ubtime > ".time();
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
+		$this->ip_bans = $this->site->database->getIPBans();
 	}
 	
 	private function buildIPTable(): void {

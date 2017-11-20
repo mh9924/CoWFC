@@ -7,33 +7,12 @@ final class GameWhitelist extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'add': $this->addToWhitelist($_POST['identifier']);break;
-				case 'rm': $this->removeFromWhitelist($_POST['identifier']);break;
+				case 'add': $this->site->database->addToWhitelist($_POST['identifier']);break;
+				case 'rm': $this->site->database->removeFromWhitelist($_POST['identifier']);break;
 			}
 		}
-		$this->whitelist = $this->getWhitelist();
+		$this->whitelist = $this->site->database->getWhitelist();
 		// $this->titles = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_admin/GameWhitelist/games.json"), true);
-	}
-	
-	private function getWhitelist(): array {
-		$sql = "SELECT * from allowed_games";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
-	private function addToWhitelist(string $game): void {
-		$sql = "INSERT INTO allowed_games (gamecd) VALUES (:gamecd)";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':gamecd', strtoupper($game));
-		$stmt->execute();
-	}
-	
-	private function removeFromWhitelist(string $game): void {
-		$sql = "DELETE FROM allowed_games WHERE gamecd = :gamecd";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':gamecd', $game);
-		$stmt->execute();
 	}
 	
 	private function buildWhitelistTable(): void {

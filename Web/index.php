@@ -1,5 +1,5 @@
 <?php
-include($_SERVER["DOCUMENT_ROOT"] . '/_drivers/Database.php');
+include($_SERVER["DOCUMENT_ROOT"] . '/_drivers/DWCDatabase.php');
 
 $s = new PageController("config.ini");
 $s->loadPage();
@@ -42,9 +42,8 @@ class PageController {
 	}
 	
 	private function loadDatabase(): void {
-		$this->database = new Database();
+		$this->database = new DWCDatabase();
 		$this->database->connect("sqlite:".$this->config['pages']['dwc_db_path']);
-		$this->database = $this->database->getConn();
 	}
 	
 	public function loadPage(): Page {

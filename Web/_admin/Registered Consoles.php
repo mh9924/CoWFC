@@ -9,77 +9,16 @@ final class RegisteredConsoles extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'add': $this->regAndActivateConsole($_POST['identifier']);break;
-				case 'act': $this->activateConsole($_POST['identifier']);break;
-				case 'rm': $this->unregisterConsole($_POST['identifier']);break;
-				case 'ban':$this->banConsole($_POST['identifier']);break;
-				case 'unban':$this->unbanConsole($_POST['identifier']);break;
+				case 'add': $this->site->database->regAndActivateConsole($_POST['identifier']);break;
+				case 'act': $this->site->database->activateConsole($_POST['identifier']);break;
+				case 'rm': $this->site->database->unregisterConsole($_POST['identifier']);break;
+				case 'ban':$this->site->database->banConsole($_POST['identifier']);break;
+				case 'unban':$this->site->database->unbanConsole($_POST['identifier']);break;
 			}
 		}
-		$this->reg_consoles = $this->getRegisteredConsoles();
-		$this->pen_consoles = $this->getPendingConsoles();
-		$this->banned_consoles = $this->getBannedConsoles();
-	}
-	
-	private function getRegisteredConsoles(): array {
-		$sql = "SELECT * FROM registered";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
-	private function regAndActivateConsole(string $console): void {
-		$sql = "INSERT INTO pending (macadr) VALUES (:macadr)";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-		$this->activateConsole($console);
-	}
-	
-	private function activateConsole(string $console): void {
-		$sql = "INSERT INTO registered (macadr) VALUES (:macadr)";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-	}
-	
-	private function banConsole(string $console): void {
-		$sql = "INSERT INTO console_macadr_banned (macadr) VALUES (:macadr)";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-	}
-	
-	private function unbanConsole(string $console): void {
-		$sql = "DELETE FROM console_macadr_banned WHERE macadr = :macadr";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-	}
-	
-	private function unregisterConsole(string $console): void {
-		$sql = "DELETE FROM pending WHERE macadr = :macadr";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-		$sql = "DELETE FROM registered WHERE macadr = :macadr";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-	}
-		
-	private function getPendingConsoles(): array {
-		$sql = "SELECT * FROM pending";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
-	private function getBannedConsoles(): array {
-		$sql = "SELECT * FROM console_macadr_banned";
-		$stmt = $this->site->database->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
+		$this->reg_consoles = $this->site->database->getRegisteredConsoles();
+		$this->pen_consoles = $this->site->database->getPendingConsoles();
+		$this->banned_consoles = $this->site->database->getBannedConsoles();
 	}
 	
 	private function buildRegisteredTable(): void {
