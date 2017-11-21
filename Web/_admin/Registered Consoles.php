@@ -12,7 +12,7 @@ final class RegisteredConsoles extends AdminPage {
 				case 'add': $this->site->database->regAndActivateConsole($_POST['identifier']);break;
 				case 'act': $this->site->database->activateConsole($_POST['identifier']);break;
 				case 'rm': $this->site->database->unregisterConsole($_POST['identifier']);break;
-				case 'ban':$this->site->database->banConsole($_POST['identifier']);break;
+				case 'ban':$this->site->database->ban("Console",array(), $_POST['identifier']);break;
 				case 'unban':$this->site->database->unbanConsole($_POST['identifier']);break;
 			}
 		}

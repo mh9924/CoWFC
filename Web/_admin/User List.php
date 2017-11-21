@@ -5,12 +5,19 @@ final class UserList extends AdminPage {
 	private $users = array();
 	private $banned_list = array();
 	private $banned_consoles = array();
+	
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->site->database->banIP($_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']); } break;
+				case 'ban': 
+					$target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);
+					$this->site->database->ban("IP", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);
+					break;
 				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
-				case 'macban': $this->site->database->banConsole($_POST['identifier']);break;
+				case 'macban': 
+					$target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);
+					$this->site->database->ban("Console", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);
+					break;
 				case 'macunban': $this->site->database->unbanConsole($_POST['identifier']);break;
 			}
 		}
@@ -49,18 +56,28 @@ final class UserList extends AdminPage {
 			echo "<tr>";
 			echo "<td>".htmlentities($ingamesn)."</td>";
 			echo "<td>";
+			echo "<form action='' method='post'>";
+			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
+			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
+			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
 			if(in_array($nasdata['ipaddr'], $this->banned_list)){
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='submit' class='btn btn-primary' value='Unban'></form>";
+				echo "<input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='submit' class='btn btn-primary' value='Unban'>";
 			} else {
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban'></form>";
+				echo "<input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban'>";
 			}
+			echo "</form>";
 			echo "</td>";
 			echo "<td>";
+			echo "<form action='' method='post'>";
+			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
+			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
+			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
 			if(in_array($nasdata['macadr'], array_column($this->banned_consoles, 'macadr'))){
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='macunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='submit' class='btn btn-primary' value='Unban MAC'></form>";
+				echo "<input type='hidden' name='action' id='action' value='macunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='submit' class='btn btn-primary' value='Unban MAC'>";
 			} else {
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='macban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='submit' class='btn btn-primary' value='Ban MAC'></form>";
+				echo "<input type='hidden' name='action' id='action' value='macban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban MAC'>";
 			}
+			echo "</form>";
 			echo "</td>";
 			echo "<td>{$row[3]}</td>";
 			echo "<td>{$row[1]}</td>";
