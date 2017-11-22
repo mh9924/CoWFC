@@ -33,16 +33,6 @@ First, you will need to be running on Ubuntu. Otherwise the [setup script](https
 # TODO
 - Public ban history
   - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
-- Integrate console banning for users with Admin GUI
-  - Maybe use the Consoles page to allow banning/unbanning of consoles?
-  - Two types of console bans
-    - Wii
-      - MAC Address
-      - Wii Friend Code (found on the Wii Message Board)
-      - Serial Number
-    - DS
-      - MAC Address
-      - Maybe BSSID too? - will make it trickier since a BSSID can't easily be changed afaik
 - Integrate moderator rank system
 - Integrate moderator account management portal
   - Only accessible by highest ranked moderators

@@ -4,16 +4,26 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 final class UserList extends AdminPage {
 	private $users = array();
 	private $banned_list = array();
+	private $banned_consoles = array();
 	
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->site->database->banIP($_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']); } break;
+				case 'ban': 
+					$target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);
+					$this->site->database->ban("IP", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);
+					break;
 				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
+				case 'macban': 
+					$target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);
+					$this->site->database->ban("Console", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);
+					break;
+				case 'macunban': $this->site->database->unbanConsole($_POST['identifier']);break;
 			}
 		}
 		$this->users = $this->site->database->getUsers();
 		$this->banned_list = $this->site->database->getBannedList();
+		$this->banned_consoles = $this->site->database->getBannedConsoles();
 	}
 	
 	private function calcFC(int $profile_id, string $game_id='RMCJ'): string {
@@ -25,7 +35,7 @@ final class UserList extends AdminPage {
 	private function buildBlacklistTable(): void {
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
 		echo '<thead><tr>';
-		echo "<th class='sorting-asc'>Name</th><th>Action</th><th>gameid</th><th>E</th><th>pid</th><th>gsbrcd</th><th>userid</th><th>IP Address</th><th>Console MAC</th><th>Friend Code</th><th>Wii Friend Code</th><th>Console Serial Number (Wii ONLY)</th>";
+		echo "<th class='sorting-asc'>Name</th><th>Action</th><th>Action</th><th>gameid</th><th>E</th><th>pid</th><th>gsbrcd</th><th>userid</th><th>IP Address</th><th>Console MAC</th><th>Friend Code</th><th>Wii Friend Code</th><th>Console Serial Number (Wii ONLY)</th>";
 		echo '</tr></thead>';
 		foreach($this->users as $row){
 			$nasdata = json_decode($row[2], true);
@@ -46,11 +56,28 @@ final class UserList extends AdminPage {
 			echo "<tr>";
 			echo "<td>".htmlentities($ingamesn)."</td>";
 			echo "<td>";
+			echo "<form action='' method='post'>";
+			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
+			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
+			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
 			if(in_array($nasdata['ipaddr'], $this->banned_list)){
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='submit' class='btn btn-primary' value='Unban'></form>";
+				echo "<input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='submit' class='btn btn-primary' value='Unban'>";
 			} else {
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban'></form>";
+				echo "<input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban'>";
 			}
+			echo "</form>";
+			echo "</td>";
+			echo "<td>";
+			echo "<form action='' method='post'>";
+			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
+			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
+			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
+			if(in_array($nasdata['macadr'], array_column($this->banned_consoles, 'macadr'))){
+				echo "<input type='hidden' name='action' id='action' value='macunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='submit' class='btn btn-primary' value='Unban MAC'>";
+			} else {
+				echo "<input type='hidden' name='action' id='action' value='macban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban MAC'>";
+			}
+			echo "</form>";
 			echo "</td>";
 			echo "<td>{$row[3]}</td>";
 			echo "<td>{$row[1]}</td>";

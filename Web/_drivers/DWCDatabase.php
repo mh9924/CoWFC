@@ -2,7 +2,12 @@
 include($_SERVER["DOCUMENT_ROOT"] . '/_drivers/Database.php');
 
 class DWCDatabase extends Database {
-	
+
+	public function ban(string $type, array $target_aliases, string $identifier, string $reason='none', int $time=0): void {
+		$this->{"ban{$type}"}($identifier, $reason, $time);
+		// Write ban log to a text file that includes $type, $reason, $time, and $_SESSION['username']
+	}
+
 	public function getFCBans(): array {
 		$sql = "SELECT * from console_cfc_banned";
 		$stmt = $this->getConn()->prepare($sql);
@@ -31,7 +36,7 @@ class DWCDatabase extends Database {
 		$stmt->execute();
 	}
 	
-	public function banIP(string $ip, string $reason='none', int $time=0): void {
+	private function banIP(string $ip, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;
 		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, :ubtime)";
@@ -79,10 +84,15 @@ class DWCDatabase extends Database {
 		$stmt->execute();
 	}
 	
-	public function banConsole(string $console): void {
-		$sql = "INSERT INTO console_macadr_banned (macadr) VALUES (:macadr)";
+	private function banConsole(string $console, string $reason='none', int $time=0): void {
+		$ubtime = time() + $time;
+		if($time == 0) $ubtime = 99999999999;
+		$sql = "INSERT INTO console_macadr_banned (macadr, timestamp, reason, ubtime) VALUES (:macadr, :timestamp, :reason, :ubtime)";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':macadr', $console);
+		$stmt->bindValue(':timestamp', time());
+		$stmt->bindParam(':reason', $reason);
+		$stmt->bindParam(':ubtime', $ubtime);
 		$stmt->execute();
 	}
 	
