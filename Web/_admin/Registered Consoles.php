@@ -65,7 +65,7 @@ final class RegisteredConsoles extends AdminPage {
 	private function buildBannedTable(): void {
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
 		echo '<thead><tr>';
-		echo "<th class='sorting-asc'>MAC Address</th><th>Unban</th>";
+		echo "<th class='sorting-asc'>MAC Address</th><th>Unban MAC</th><th>Timestamp</th><th>Until</th><th>Reason</th>";
 		echo '</tr></thead>';
 		foreach($this->banned_consoles as $row){
 			echo "<tr>";
@@ -74,6 +74,17 @@ final class RegisteredConsoles extends AdminPage {
 			echo "</td>";
 			echo "<td>";
 			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Unban'></form>";
+			echo "<td>";
+			echo date('m/d/Y H:i:s', $row[1]);
+			echo "</td>";
+			echo "<td>";
+			if ($row[3] == 99999999999)
+				echo 'Forever';
+			else
+				echo date('m/d/Y H:i:s', $row[3]);
+			echo "</td>";
+			echo "<td>";
+			echo htmlentities($row[2]);
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -92,6 +103,7 @@ final class RegisteredConsoles extends AdminPage {
 		  <li class="breadcrumb-item active"><?php echo $this->meta_title; ?></li>
 		</ol>
 		<form action='' method='post'>Register and Activate MAC: <input type='hidden' name='action' id='action' value='add'><input class='form-control' style='width:175px;' type='text' name='identifier' id='identifier' maxlength='12'><input type='submit' class='btn btn-primary' value='Register & Activate'></form>
+		<form action='' method='post'>Ban MAC address: <input type='hidden' name='action' id='action' value='ban'><input class='form-control' style='width:175px;' type='text' name='identifier' id='identifier' maxlength='12'><input class='form-control' style='width:225px;' type='text' name='reason' id='reason' placeholder='Reason'><input type='submit' class='btn btn-primary' value='Ban'></form>
 
 		<div class="card mb-3">
 			<div class="card-header">
