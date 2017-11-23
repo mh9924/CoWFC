@@ -161,5 +161,34 @@ class DWCDatabase extends Database {
 		}
 		return $banned;
 	}
-	
+	public function getNumBannedProfiles(): int {
+		$sql = "SELECT COUNT(*) FROM IP_BANNED WHERE ubtime > ".time();
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch()[0];
+	}
+	public function getNumBannedConsoles(): int {
+		$sql = "SELECT COUNT(*) FROM console_macadr_banned where ubtime > ".time();
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch()[0];
+	}
+	public function getActiveGames(): int {
+		$sql = "SELECT COUNT(*) FROM allowed_games";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch()[0];
+	}
+	public function getConsoles(): int {
+		$sql = "SELECT COUNT(*) FROM registered";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch()[0];
+	}
+	public function getProfiles(): int {
+		$sql = "SELECT COUNT(*) FROM users";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch()[0];
+	}
 }

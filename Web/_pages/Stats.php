@@ -7,12 +7,10 @@ final class Stats extends Page {
 	private $titles = array();
 	private $sorts = array();
 	private $sort;
-	
 	public function __construct(PageController $site) {
 		$this->initStats();
 		parent::__construct($site);
 	}
-	
 	private function initStats(): void {
 		$this->sorts = ['Game', 'Country'];
 		$this->sort = 'Game';
@@ -110,6 +108,16 @@ final class Stats extends Page {
 			<section id="content">
 				<h3>Display As: <?php $this->buildDropDown(); ?></h3>
 				<p><?php $this->buildStatsTable(); ?></p>
+				<h3>Here are some usage stats for  <?php echo $this->site->config["main"]["name"]; ?>:</h3>
+				<p>
+					<ul>
+						<li id="stat"> <?php echo $this->site->database->getConsoles(); ?> Total Consoles</li>
+						<li id="stat"> <?php echo $this->site->database->getNumBannedProfiles(); ?> Profiles Banned</li>
+						<li id="stat"> <?php echo $this->site->database->getNumBannedConsoles(); ?> Banned Consoles</li>
+						<li id="stat"> <?php echo $this->site->database->getProfiles(); ?> Total Profiles</li>
+						<li id="stat"> <?php echo $this->site->database->getActiveGames(); ?> Games Enabled</li>
+					</ul>
+				</p>
 			</section>
 
 	</div>
