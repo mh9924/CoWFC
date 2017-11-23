@@ -122,7 +122,7 @@ class DWCDatabase extends Database {
 	}
 	
 	public function getBannedConsoles(): array {
-		$sql = "SELECT * FROM console_macadr_banned";
+		$sql = "SELECT * FROM console_macadr_banned where ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
