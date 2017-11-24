@@ -5,7 +5,11 @@ class DWCDatabase extends Database {
 
 	public function ban(string $type, array $target_aliases, string $identifier, string $reason='none', int $time=0): void {
 		$this->{"ban{$type}"}($identifier, $reason, $time);
-		// Write ban log to a text file that includes $type, $reason, $time, and $_SESSION['username']
+		$identifier = !$target_aliases ? $identifier : implode(" / ", $target_aliases);
+		$format = "[%s] %s - %s banned %s %s (Reason: %s)\n";
+		$time = $time == 0 ? "forever" : "until " . date('m/d/Y H:i:s', time()+$time);
+		$logmsg = sprintf($format, date('m/d/Y H:i:s', time()), $type, $_SESSION['username'], $identifier, $time, $reason);
+		file_put_contents("bans.log", $logmsg, FILE_APPEND);
 	}
 
 	public function getFCBans(): array {
