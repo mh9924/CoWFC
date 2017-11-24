@@ -8,7 +8,9 @@ class DWCDatabase extends Database {
 		$identifier = !$target_aliases ? $identifier : implode(" / ", $target_aliases);
 		$format = "[%s] %s - %s banned %s %s (Reason: %s)\n";
 		$time = $time == 0 ? "forever" : "until " . date('m/d/Y H:i:s', time()+$time);
-		$logmsg = sprintf($format, date('m/d/Y H:i:s', time()), $type, $_SESSION['username'], $identifier, $time, $reason);
+		$logmsg = sprintf($format, date('m/d/Y H:i:s', time()), strtoupper($type), 
+							$_SESSION['username'], $identifier, $time, empty($reason) ? 'None' : $reason);
+		
 		file_put_contents($this->site->config['admin']['banlog_path'], $logmsg, FILE_APPEND);
 	}
 
