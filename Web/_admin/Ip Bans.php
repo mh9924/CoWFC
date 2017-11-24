@@ -7,8 +7,7 @@ final class IpBans extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->site->database->ban("IP", array(), $_POST['identifier'], 
-				$_POST['reason']); } break;
+				case 'ban': if(isset($_POST['reason'])){ $this->site->database->ban("IP", array(), $_POST['identifier'], $_POST['reason']); } break;
 				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
 			}
 		}

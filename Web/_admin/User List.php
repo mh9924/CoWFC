@@ -9,15 +9,9 @@ final class UserList extends AdminPage {
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'ban': 
-					$target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);
-					$this->site->database->ban("IP", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);
-					break;
+				case 'ban': $target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);$this->site->database->ban("IP", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);break;
 				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
-				case 'macban': 
-					$target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);
-					$this->site->database->ban("Console", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);
-					break;
+				case 'macban': $target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);$this->site->database->ban("Console", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);break;
 				case 'macunban': $this->site->database->unbanConsole($_POST['identifier']);break;
 			}
 		}
