@@ -31,8 +31,6 @@ First, you will need to be running on Ubuntu. Otherwise the [setup script](https
 ## More screenshots coming soon as we get further with development.
 
 # TODO
-- Public ban history
-  - Maybe show player name, ban time, unban time, reason for ban and length of ban on page
 - Integrate moderator rank system
 - Integrate moderator account management portal
   - Only accessible by highest ranked moderators
