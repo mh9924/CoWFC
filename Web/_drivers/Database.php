@@ -3,6 +3,11 @@ class Database {
 	private $conn;
 	private $username;
 	private $password;
+	public $site;
+	
+	public function __construct(PageController $site){
+		$this->site = $site;
+	}
 	
 	public function connect(string $host, string $db='', string $username='', string $password=''): PDO {
 		if ($this->conn == null){

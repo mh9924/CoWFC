@@ -42,7 +42,7 @@ class PageController {
 	}
 	
 	private function loadDatabase(): void {
-		$this->database = new DWCDatabase();
+		$this->database = new DWCDatabase($this);
 		$this->database->connect("sqlite:".$this->config['pages']['dwc_db_path']);
 	}
 	

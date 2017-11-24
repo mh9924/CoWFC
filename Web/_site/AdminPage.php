@@ -25,7 +25,7 @@ abstract class AdminPage extends Page {
 	}
 	
 	private function initMySQL(): void {
-		$this->udatabase = new Database();
+		$this->udatabase = new Database($this->site);
 		$config = $this->site->config['admin'];
 		$this->udatabase->connect($config['db_host'],$config['db_name'],$config['db_user'],$config['db_pass']);
 		$this->udatabase = $this->udatabase->getConn();

@@ -9,7 +9,7 @@ class DWCDatabase extends Database {
 		$format = "[%s] %s - %s banned %s %s (Reason: %s)\n";
 		$time = $time == 0 ? "forever" : "until " . date('m/d/Y H:i:s', time()+$time);
 		$logmsg = sprintf($format, date('m/d/Y H:i:s', time()), $type, $_SESSION['username'], $identifier, $time, $reason);
-		file_put_contents("bans.log", $logmsg, FILE_APPEND);
+		file_put_contents($this->site->config['admin']['banlog_name'], $logmsg, FILE_APPEND);
 	}
 
 	public function getFCBans(): array {
