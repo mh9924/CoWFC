@@ -76,7 +76,8 @@ final class UserList extends AdminPage {
 			echo "<td>{$row[3]}</td>";
 			echo "<td>{$row[1]}</td>";
 			echo "<td>{$row[0]}</td>";
-			echo "<td>{$nasdata['gsbrcd']}</td>";
+			if(isset($nasdata['gsbrcd']))
+				echo "<td>{$nasdata['gsbrcd']}</td>";
 			echo "<td>{$row[5]}</td>";
 			echo "<td>{$nasdata['ipaddr']}</td>";
 			echo "<td>{$nasdata['macadr']}</td>";
