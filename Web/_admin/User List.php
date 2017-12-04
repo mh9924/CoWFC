@@ -89,6 +89,7 @@ final class UserList extends AdminPage {
 				}
 			} else {
 				echo "<td>N/A</td>";
+			}
 			echo "<td>{$row[3]}</td>";
 			echo "<td>{$row[1]}</td>";
 			echo "<td>{$row[0]}</td>";
