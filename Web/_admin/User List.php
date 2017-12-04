@@ -14,7 +14,7 @@ final class UserList extends AdminPage {
 				case 'macban': $target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);$this->site->database->ban("Console", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);break;
 				case 'macunban': $this->site->database->unbanConsole($_POST['identifier']);break;
 				case 'profileban': $target_alias = array($_POST['sn'], $_POST['fc'], $_POST['pid']);$this->site->database->ban("Profile", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);break;
-				case 'profileunban': $this->site->database->unbanProfile(_POST['identifier]);break;
+				case 'profileunban': $this->site->database->unbanProfile(_POST['identifier']);break;
 			}
 		}
 		$this->users = $this->site->database->getUsers();
