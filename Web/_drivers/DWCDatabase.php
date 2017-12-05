@@ -203,7 +203,7 @@ class DWCDatabase extends Database {
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
-
+	}
 	public function getNumBannedConsoles(): int {
 		$sql = "SELECT COUNT(*) FROM console_macadr_banned where ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
