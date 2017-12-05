@@ -111,12 +111,12 @@ final class Stats extends Page {
 				<h3>Here are some usage stats for  <?php echo $this->site->config["main"]["name"]; ?>:</h3>
 				<p>
 					<ul>
-						<li id="stat"> <?php echo $this->site->database->getConsoles(); ?> Total Consoles</li>
-						<li id="stat"> <?php echo $this->site->database->getNumBannedMisc(); ?> Current Misc. Bans</li>
-						<li id="stat"> <?php echo $this->site->database->getNumBannedProfiles(); ?> Profiles Currently Banned</li>
-						<li id="stat"> <?php echo $this->site->database->getNumBannedConsoles(); ?> Consoles Currently Banned</li>
-						<li id="stat"> <?php echo $this->site->database->getProfiles(); ?> Total Profiles</li>
-						<li id="stat"> <?php echo $this->site->database->getActiveGames(); ?> Games Enabled</li>
+						<li id="stat"><?php echo $this->site->database->getConsoles(); ?> Total Consoles</li>
+						<li id="stat"><?php echo $this->site->database->getNumBannedMisc(); ?> Current Misc. Bans</li>
+						<li id="stat"><?php echo $this->site->database->getNumBannedProfiles(); ?> Profiles Currently Banned</li>
+						<li id="stat"><?php echo $this->site->database->getNumBannedConsoles(); ?> Consoles Currently Banned</li>
+						<li id="stat"><?php echo $this->site->database->getProfiles(); ?> Total Profiles</li>
+						<li id="stat"><?php echo $this->site->database->getActiveGames(); ?> Games Enabled</li>
 					</ul>
 				</p>
 			</section>
