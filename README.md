@@ -41,7 +41,6 @@ Follow the rest of the on-screen instructions and let your server build.
 ## More screenshots coming soon as we get further with development.
 
 # TODO
-- Fix Profile Unban function - button does nothing
 - Integrate moderator rank system
 - Integrate moderator account management portal
   - Only accessible by highest ranked moderators

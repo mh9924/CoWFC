@@ -1,3 +1,4 @@
+
 <?php
 include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 
@@ -15,7 +16,7 @@ final class UserList extends AdminPage {
 				case 'macban': $target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);$this->site->database->ban("Console", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);break;
 				case 'macunban': $this->site->database->unbanConsole($_POST['identifier']);break;
 				case 'profileban': $target_aliases = array($_POST['sn'], $_POST['fc'], $_POST['pid']);$this->site->database->ban("Profile", $target_aliases, $_POST['identifier'], $_POST['reason'], 60 * (int)$_POST['time']);break;
-				case 'profileunban': $this->site->database->unbanProfile(_POST['identifier']);break;
+				case 'profileunban': $this->site->database->unbanProfile($_POST['identifier']);break;
 			}
 		}
 		$this->users = $this->site->database->getUsers();
@@ -84,8 +85,7 @@ final class UserList extends AdminPage {
 				echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 				echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
 				if(in_array($nasdata['gsbrcd'], array_column($this->banned_profiles, 'gsbrcd'))){
-					echo "<td>Profile Unbans are currently unavailable!</td>";
-					//echo "<input type='hidden' name='action' id='action' value='profileunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='submit' class='btn btn-primary' value='Unban Profile'>";
+					echo "<input type='hidden' name='action' id='action' value='profileunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='submit' class='btn btn-primary' value='Unban Profile'>";
 				} else {
 					echo "<input type='hidden' name='action' id='action' value='profileban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban Profile'>";
 				}
