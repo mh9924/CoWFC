@@ -16,6 +16,7 @@ final class ErrorCodes extends Page {
 				<h3>Here is a list of all known error codes to <?php echo $this->site->config["main"]["name"]; ?> and what they mean:</h3>
 				<p>
 					<ul>
+						<li id="error">22222 - Banned from Mario Kart Wii: Improper console identification. Please use a real console!</li
 						<li id="error">23800 - Game not supported by <?php echo $this->site->config["main"]["name"]; ?> - <?php echo $this->site->config["main"]["name"]; ?> only support Mario Kart Wii and Mario Kart DS. This error may also be caused if your game ID is improperly set.</li>
 						<li id="error">23913 - Console creation denied!</li>
 						<li id="error">23914 - Console is banned!</li>
