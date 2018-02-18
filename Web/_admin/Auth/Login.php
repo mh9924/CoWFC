@@ -9,7 +9,7 @@ class Login {
 	
 	public function __construct(AdminPage $panel){
 		$this->panel = $panel;
-		$this->secret = $this->panel->site->config["admin"]["recaptcha_secret"];
+		self::$secret = $this->panel->site->config["admin"]["recaptcha_secret"];
 		if(isset($_POST['username'], $_POST['password'])){
 			$this->username = $_POST['username'];
 			$this->password = $_POST['password'];
