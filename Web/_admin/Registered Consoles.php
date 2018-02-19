@@ -5,15 +5,24 @@ final class RegisteredConsoles extends AdminPage {
 	private $reg_consoles = array();
 	private $pen_consoles = array();
 	private $banned_consoles = array();
+	private $identifierActions = array(
+		"add" => "regAndActivateConsole",
+		"act" => "activateConsole",
+		"rm" => "unregisterConsole",
+		"unban" => "unbanConsole"
+	);
 	
 	private function handleReq(): void {
 		if(isset($_POST['action'], $_POST['identifier'])){
 			switch($_POST['action']){
-				case 'add': $this->site->database->regAndActivateConsole($_POST['identifier']);break;
-				case 'act': $this->site->database->activateConsole($_POST['identifier']);break;
-				case 'rm': $this->site->database->unregisterConsole($_POST['identifier']);break;
-				case 'ban': if(isset($_POST['reason'])){ $this->site->database->ban("Console", array(), $_POST['identifier'], $_POST['reason']); } break;
-				case 'unban':$this->site->database->unbanConsole($_POST['identifier']);break;
+				case 'ban': 
+					if(isset($_POST['reason'])){
+						$this->site->database->ban("Console", array(), $_POST['identifier'], $_POST['reason']); 
+						break;
+					}
+				default:
+					if(array_key_exists($_POST["action"], $this->identifierActions))
+						$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST['identifier']);
 			}
 		}
 		$this->reg_consoles = $this->site->database->getRegisteredConsoles();

@@ -3,14 +3,15 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 
 final class GameWhitelist extends AdminPage {
 	private $whitelist = array();
+	private $identifierActions = array(
+		"add" => "addToWhitelist",
+		"rm" => "removeFromWhitelist"
+	);
 	
 	private function handleReq(): void {
-		if(isset($_POST['action'], $_POST['identifier'])){
-			switch($_POST['action']){
-				case 'add': $this->site->database->addToWhitelist($_POST['identifier']);break;
-				case 'rm': $this->site->database->removeFromWhitelist($_POST['identifier']);break;
-			}
-		}
+		if(isset($_POST["action"], $_POST["identifier"]))
+			if(array_key_exists($_POST["action"], $this->identifierActions))
+				$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST["identifier"]);
 		$this->whitelist = $this->site->database->getWhitelist();
 		// $this->titles = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_admin/GameWhitelist/games.json"), true);
 	}
