@@ -15,7 +15,12 @@ class PageController {
 		$this->loadConfiguration($config);
 		$this->loadDatabase();
 		if (!$this->config['main']['debug'])
-			error_reporting(0);
+			ini_set('display_errors', '0');
+		else {
+			error_reporting(E_ALL);
+			ini_set('display_errors', '1');
+		}
+			
 		$this->requested_page = 'Home';
 		$this->mode = 'pages';
 		if(isset($_GET['page'])){
