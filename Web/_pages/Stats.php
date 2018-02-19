@@ -11,6 +11,7 @@ final class Stats extends Page {
 		$this->initStats();
 		parent::__construct($site);
 	}
+	
 	private function initStats(): void {
 		$this->sorts = ['Game', 'Country'];
 		$this->sort = 'Game';
