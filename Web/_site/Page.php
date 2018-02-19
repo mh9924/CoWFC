@@ -23,7 +23,7 @@ abstract class Page {
 	}
 		
 	protected function buildHeader(): void {
-		if ($this->config["main"]["debug"])
+		if ($this->site->config["main"]["debug"])
 			echo "CoWFC is running in debug mode. Errors will be visible.";
 		$this->header->build();
 	}
