@@ -3,12 +3,20 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 
 final class IpBans extends AdminPage {
 	private $ip_bans = array();
+	private $identifierActions = array(
+		"unban" => "unbanIP"
+	);
 	
 	private function handleReq(): void {
-		if(isset($_POST['action'], $_POST['identifier'])){
-			switch($_POST['action']){
-				case 'ban': if(isset($_POST['reason'])){ $this->site->database->ban("IP", array(), $_POST['identifier'], $_POST['reason']); } break;
-				case 'unban': $this->site->database->unbanIP($_POST['identifier']);break;
+		if(isset($_POST["action"], $_POST["identifier"])){
+			switch($_POST["action"]){
+				case "ban": 
+					if(isset($_POST["reason"]))
+						$this->site->database->ban("IP", array(), $_POST["identifier"], $_POST["reason"]);
+					break;
+				default:
+					if(array_key_exists($_POST["action"], $this->identifierActions))
+						$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST["identifier"]);
 			}
 		}
 		$this->ip_bans = $this->site->database->getIPBans();

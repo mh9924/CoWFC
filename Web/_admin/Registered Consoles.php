@@ -13,16 +13,15 @@ final class RegisteredConsoles extends AdminPage {
 	);
 	
 	private function handleReq(): void {
-		if(isset($_POST['action'], $_POST['identifier'])){
-			switch($_POST['action']){
-				case 'ban': 
-					if(isset($_POST['reason'])){
-						$this->site->database->ban("Console", array(), $_POST['identifier'], $_POST['reason']); 
-						break;
-					}
+		if(isset($_POST["action"], $_POST["identifier"])){
+			switch($_POST["action"]){
+				case "ban": 
+					if(isset($_POST["reason"]))
+						$this->site->database->ban("Console", array(), $_POST["identifier"], $_POST["reason"]); 
+					break;
 				default:
 					if(array_key_exists($_POST["action"], $this->identifierActions))
-						$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST['identifier']);
+						$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST["identifier"]);
 			}
 		}
 		$this->reg_consoles = $this->site->database->getRegisteredConsoles();
