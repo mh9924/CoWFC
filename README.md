@@ -12,9 +12,19 @@ Front- and back-end website for the DWC network server emulator
   - Landed
   - SBAdmin
 # How to Build
-First, you will need to be running on Ubuntu. Otherwise the [setup script](https://github.com/kyle95wm/cowfc_installer) will not run. Please run the following comments below to get started:
+First, you will need to be running on Ubuntu. Otherwise the [setup script](https://github.com/kyle95wm/cowfc_installer) will not run. Please run the following command below to get started:
 
-`mkdir /var/www && cd /var/www && wget https://raw.githubusercontent.com/kyle95wm/cowfc_installer/master/cowfc.sh && chmod +x cowfc.sh && ./cowfc.sh`
+`mkdir /var/www ; cd /var/www && wget https://raw.githubusercontent.com/kyle95wm/cowfc_installer/master/cowfc.sh && chmod +x cowfc.sh && ./cowfc.sh`
+
+If you're on AWS, you can run this instead:
+
+`mkdir /var/www ; cd /var/www && wget https://raw.githubusercontent.com/kyle95wm/cowfc_installer/master/cowfc.sh && chmod +x cowfc.sh && && touch /var/www/.aws_install && ./cowfc.sh`
+
+Your server will reboot after adding the PHP7.1 repo. After the server has rebooted, please issue the following commands:
+`cd /var/www/ && ./cowfc.sh`
+
+Follow the rest of the on-screen instructions and let your server build.
+
 # Features
 - Stats page shows who is online by game/country
 - Admin panel to manage bans, whitelists, and more
