@@ -8,7 +8,7 @@ Front- and back-end website for the DWC network server emulator
   - php7.1-mysql
   - sqlite php-sqlite3
 - MySQL
-- HTML5 templates
+- HTML5 templates (auto-installed by kyle95wm's setup script)
   - Landed
   - SBAdmin
 # How to Build
