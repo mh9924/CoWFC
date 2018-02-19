@@ -17,6 +17,7 @@ final class IpBans extends AdminPage {
 				default:
 					if(array_key_exists($_POST["action"], $this->identifierActions))
 						$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST["identifier"]);
+					break;
 			}
 		}
 		$this->ip_bans = $this->site->database->getIPBans();
