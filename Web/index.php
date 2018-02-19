@@ -14,20 +14,20 @@ class PageController {
 	public function __construct(string $config){
 		$this->loadConfiguration($config);
 		$this->loadDatabase();
-		if (!$this->config['main']['debug'])
-			ini_set('display_errors', '0');
+		if (!$this->config["main"]["debug"])
+			ini_set("display_errors", "0");
 		else {
 			error_reporting(E_ALL);
-			ini_set('display_errors', '1');
+			ini_set("display_errors", "1");
 		}
 			
-		$this->requested_page = 'Home';
-		$this->mode = 'pages';
-		if(isset($_GET['page'])){
-			$this->requested_page = ucwords($_GET['page']);
-			if($this->requested_page == 'Admin' && isset($_GET['section'])){
-				$this->requested_page = ucwords($_GET['section']);
-				$this->mode = 'admin';
+		$this->requested_page = "Home";
+		$this->mode = "pages";
+		if(isset($_GET["page"])){
+			$this->requested_page = ucwords($_GET["page"]);
+			if($this->requested_page == "Admin" && isset($_GET["section"])){
+				$this->requested_page = ucwords($_GET["section"]);
+				$this->mode = "admin";
 			}
 		}
 		$this->pages = scandir("_{$this->mode}");

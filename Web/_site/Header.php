@@ -59,7 +59,7 @@ class Header {
 ?>
 <html>
 	<head>
-		<title><?php echo $this->page->site->config['main']['name'] . " | " . $this->page->meta_title; ?></title>
+		<title><?php echo $this->page->site->config["main"]["name"] . " | " . $this->page->meta_title; ?></title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--[if lte IE 8]><script src="../assets/js/ie/html5shiv.js"></script><![endif]-->
