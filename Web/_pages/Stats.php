@@ -5,16 +5,18 @@ final class Stats extends Page {
 	private $games = array();
 	private $countries = array();
 	private $titles = array();
-	private $sorts = array();
-	private $sort;
+	private $sorts = array(
+		"Game",
+		"Country"
+	);
+	private $sort = "Game";
+	
 	public function __construct(PageController $site) {
 		$this->initStats();
 		parent::__construct($site);
 	}
 	
 	private function initStats(): void {
-		$this->sorts = ['Game', 'Country'];
-		$this->sort = 'Game';
 		if(isset($_GET['sort']) && in_array($_GET['sort'], $this->sorts))
 			$this->sort = $_GET['sort'];
 		$json = @file_get_contents("http://localhost:9001/json");
@@ -86,14 +88,14 @@ final class Stats extends Page {
 	private function buildDropDown(): void {
 		echo "<select onChange='window.location.href=this.value' style='width: 120px;'>";
 		foreach ($this->sorts as $sort){
-			echo "<option value='?page=stats&sort={$sort}'" . ($sort == $this->sort ? 'selected' : '') .">{$sort}</option>";
+			echo "<option value='?page=stats&sort={$sort}'" . ($sort == $this->sort ? "selected" : "") .">{$sort}</option>";
 		}
 		echo "</select>";
 	}
 	
 	private function getCountryFromIP(string $ip): string {
 		$info = json_decode(file_get_contents("http://ipinfo.io/{$ip}/json"), true);
-		return $info['country'];
+		return $info["country"];
 	}
 	
 	protected function buildPage(): void {
