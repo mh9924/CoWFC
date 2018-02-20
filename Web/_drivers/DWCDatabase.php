@@ -3,15 +3,15 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_drivers/Database.php');
 
 class DWCDatabase extends Database {
 
-	public function ban(string $type, array $target_aliases, string $identifier, string $reason='none', int $time=0): void {
+	public function ban(string $type, array $target_aliases, string $identifier, string $reason="none", int $time=0): void {
 		$this->{"ban{$type}"}($identifier, $reason, $time);
 		$identifier = !$target_aliases ? $identifier : implode(" / ", $target_aliases);
 		$format = "[%s] %s - %s banned %s %s (Reason: %s)\n";
-		$time = $time == 0 ? "forever" : "until " . date('m/d/Y H:i:s', time()+$time);
-		$logmsg = sprintf($format, date('m/d/Y H:i:s', time()), strtoupper($type), 
-							$_SESSION['username'], $identifier, $time, empty($reason) ? 'None' : $reason);
+		$time = $time == 0 ? "forever" : "until " . date("m/d/Y H:i:s", time()+$time);
+		$logmsg = sprintf($format, date("m/d/Y H:i:s", time()), strtoupper($type), 
+							$_SESSION["username"], $identifier, $time, empty($reason) ? "None" : $reason);
 		
-		file_put_contents($this->site->config['admin']['banlog_path'], $logmsg, FILE_APPEND);
+		file_put_contents($this->site->config["admin"]["banlog_path"], $logmsg, FILE_APPEND);
 	}
 
 	public function getFCBans(): array {
@@ -192,36 +192,42 @@ class DWCDatabase extends Database {
 		}
 		return $banned;
 	}
+	
 	public function getNumBannedMisc(): int {
 		$sql = "SELECT COUNT(*) FROM IP_BANNED WHERE ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
+	
 	public function getNumBannedProfiles(): int {
 		$sql = "SELECT COUNT(*) FROM PROFILE_BANNED WHERE ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
+	
 	public function getNumBannedConsoles(): int {
 		$sql = "SELECT COUNT(*) FROM console_macadr_banned where ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
+	
 	public function getActiveGames(): int {
 		$sql = "SELECT COUNT(*) FROM allowed_games";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
+	
 	public function getConsoles(): int {
 		$sql = "SELECT COUNT(*) FROM registered";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
+	
 	public function getProfiles(): int {
 		$sql = "SELECT COUNT(*) FROM users";
 		$stmt = $this->getConn()->prepare($sql);
