@@ -14,13 +14,6 @@ class DWCDatabase extends Database {
 		file_put_contents($this->site->config["admin"]["banlog_path"], $logmsg, FILE_APPEND);
 	}
 
-	public function getFCBans(): array {
-		$sql = "SELECT * from console_cfc_banned";
-		$stmt = $this->getConn()->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
 	public function getWhitelist(): array {
 		$sql = "SELECT * from allowed_games";
 		$stmt = $this->getConn()->prepare($sql);
@@ -45,7 +38,7 @@ class DWCDatabase extends Database {
 	private function banIP(string $ip, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;
-		$sql = "INSERT INTO ip_banned (ipaddr, timestamp, reason, ubtime) VALUES (:ipaddr, :timestamp, :reason, :ubtime)";
+		$sql = "INSERT INTO banned (banned_id, timestamp, reason, ubtime, type) VALUES (:ipaddr, :timestamp, :reason, :ubtime, 'ip')";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':ipaddr', $ip);
 		$stmt->bindValue(':timestamp', time());
@@ -57,7 +50,7 @@ class DWCDatabase extends Database {
 	private function banProfile (string $profile, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;
-		$sql = "INSERT INTO profile_banned (gsbrcd, timestamp, reason, ubtime) VALUES (:gsbrcd, :timestamp, :reason, :ubtime)";
+		$sql = "INSERT INTO banned (banned_id, timestamp, reason, ubtime, type) VALUES (:gsbrcd, :timestamp, :reason, :ubtime, 'profile')";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':gsbrcd', $profile);
 		$stmt->bindValue(':timestamp', time());
@@ -67,7 +60,7 @@ class DWCDatabase extends Database {
 	}
 
 	public function unbanProfile (string $gsbrcd): void {
-		$sql = "DELETE FROM profile_banned WHERE gsbrcd = :gsbrcd";
+		$sql = "DELETE FROM banned WHERE banned_id = :gsbrcd";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':gsbrcd', $gsbrcd);
 		$stmt->execute();
@@ -76,7 +69,7 @@ class DWCDatabase extends Database {
 	private function banAP (string $ap, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;
-		$sql = "INSERT INTO ap_banned (bssid, timestamp, reason, ubtime) VALUES (:bssid, :timestamp, :reason, :ubtime)";
+		$sql = "INSERT INTO banned (banned_id, timestamp, reason, ubtime, type) VALUES (:bssid, :timestamp, :reason, :ubtime, 'ap')";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':bssid', $ap);
 		$stmt->bindValue(':timestamp', time());
@@ -86,50 +79,56 @@ class DWCDatabase extends Database {
 	}
 
 	public function unbanAP(string $ap): void {
-		$sql = "DELETE FROM ap_banned WHERE bssid = :bssid";
+		$sql = "DELETE FROM banned WHERE banned_id = :bssid";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':bssid', $ap);
 		$stmt->execute();
 	}
 	
 	public function unbanIP(string $ip): void {
-		$sql = "DELETE FROM ip_banned WHERE ipaddr = :ipaddr";
+		$sql = "DELETE FROM banned WHERE banned_id = :ipaddr";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':ipaddr', $ip);
 		$stmt->execute();
 	}
 
 	public function getBannedAPs(): array {
-		$sql = "SELECT * FROM ap_banned where ubtime > ".time();
+		$sql = "SELECT banned_id, timestamp, reason, ubtime FROM banned where type = 'ap' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
 	
 	public function getIPBans(): array {
-		$sql = "SELECT * FROM IP_BANNED WHERE ubtime > ".time();
+		$sql = "SELECT banned_id, timestamp, reason, ubtime FROM banned WHERE type = 'ip' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
 	
 	public function getRegisteredConsoles(): array {
-		$sql = "SELECT * FROM registered";
+		$sql = "SELECT * FROM consoles where enabled = '1'";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetchAll();
+	}
+
+	public function getAbusedConsoles(): array {
+		$sql = "SELECT (macadr) FROM consoles where abuse = '1'";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
 	
 	public function regAndActivateConsole(string $console): void {
-		$sql = "INSERT INTO pending (macadr) VALUES (:macadr)";
+		$sql = "INSERT INTO consoles (macadr,enabled) VALUES (:macadr,1)";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':macadr', $console);
 		$stmt->execute();
-		$this->activateConsole($console);
 	}
-	
+
 	public function activateConsole(string $console): void {
-		$sql = "INSERT INTO registered (macadr) VALUES (:macadr)";
+		$sql = "UPDATE consoles SET enabled = '1' WHERE macadr = ':macadr'";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':macadr', $console);
 		$stmt->execute();
@@ -138,7 +137,7 @@ class DWCDatabase extends Database {
 	private function banConsole(string $console, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;
-		$sql = "INSERT INTO console_macadr_banned (macadr, timestamp, reason, ubtime) VALUES (:macadr, :timestamp, :reason, :ubtime)";
+		$sql = "INSERT INTO banned (banned_id, timestamp, reason, ubtime, type) VALUES (:macadr, :timestamp, :reason, :ubtime, 'console')";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':macadr', $console);
 		$stmt->bindValue(':timestamp', time());
@@ -148,51 +147,40 @@ class DWCDatabase extends Database {
 	}
 	
 	public function unbanConsole(string $console): void {
-		$sql = "DELETE FROM console_macadr_banned WHERE macadr = :macadr";
+		$sql = "DELETE FROM banned WHERE type = 'console' and banned_id = :macadr";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':macadr', $console);
 		$stmt->execute();
 	}
 	
 	public function unregisterConsole(string $console): void {
-		$sql = "DELETE FROM pending WHERE macadr = :macadr";
-		$stmt = $this->getConn()->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-		$sql = "DELETE FROM registered WHERE macadr = :macadr";
+		$sql = "DELETE FROM consoles WHERE macadr = :macadr";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':macadr', $console);
 		$stmt->execute();
 	}
 		
 	public function getPendingConsoles(): array {
-		$sql = "SELECT * FROM pending";
+		$sql = "SELECT (macadr) FROM consoles where enabled = '0'";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
 	
 	public function getBannedConsoles(): array {
-		$sql = "SELECT * FROM console_macadr_banned where ubtime > ".time();
+		$sql = "SELECT banned_id, timestamp, reason, ubtime FROM banned where type = 'console' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
 
 	public function getBannedProfiles(): array {
-		$sql = "SELECT * FROM profile_banned where ubtime > ".time();
+		$sql = "SELECT banned_id, timestamp, reason, ubtime FROM banned where type = 'profile' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
-	
-	public function getSNBans(): array {
-		$sql = "SELECT * from console_csnum_banned";
-		$stmt = $this->getConn()->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll();
-	}
-	
+
 	public function getUsers(): array {
 		$sql = "SELECT users.profileid,enabled,data,users.gameid,console,users.userid 
 				FROM nas_logins 
@@ -210,7 +198,7 @@ class DWCDatabase extends Database {
 	}
 	
 	public function getBannedList(): array {
-		$sql = "SELECT * FROM IP_BANNED WHERE ubtime > ".time();
+		$sql = "SELECT banned_id, timestamp, reason, ubtime FROM banned WHERE type = 'ip' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		$banned = array();
@@ -219,23 +207,23 @@ class DWCDatabase extends Database {
 		}
 		return $banned;
 	}
-	
+
 	public function getNumBannedMisc(): int {
-		$sql = "SELECT COUNT(*) FROM IP_BANNED WHERE ubtime > ".time();
+		$sql = "SELECT COUNT(*) FROM banned WHERE type = 'ip' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
 	
 	public function getNumBannedProfiles(): int {
-		$sql = "SELECT COUNT(*) FROM PROFILE_BANNED WHERE ubtime > ".time();
+		$sql = "SELECT COUNT(*) FROM banned WHERE type = 'profile' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
 	}
 	
 	public function getNumBannedConsoles(): int {
-		$sql = "SELECT COUNT(*) FROM console_macadr_banned where ubtime > ".time();
+		$sql = "SELECT COUNT(*) FROM banned where type = 'console' and ubtime > ".time();
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
@@ -249,7 +237,7 @@ class DWCDatabase extends Database {
 	}
 	
 	public function getConsoles(): int {
-		$sql = "SELECT COUNT(*) FROM registered";
+		$sql = "SELECT COUNT(*) FROM consoles where enabled = '1'";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
@@ -257,6 +245,13 @@ class DWCDatabase extends Database {
 	
 	public function getProfiles(): int {
 		$sql = "SELECT COUNT(*) FROM users";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch()[0];
+	}
+
+	public function getNumOfAllBans(): int {
+		$sql = "SELECT COUNT(*) FROM banned";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->execute();
 		return $stmt->fetch()[0];
