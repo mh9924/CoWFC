@@ -75,7 +75,7 @@ final class UserList extends AdminPage {
 			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
-			if(in_array($nasdata['macadr'], array_column($this->banned_consoles, 'macadr'))){
+			if(in_array($nasdata['macadr'], array_column($this->banned_consoles, 'banned_id'))){
 				echo "<input type='hidden' name='action' id='action' value='macunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='submit' class='btn btn-primary' value='Unban MAC'>";
 			} else {
 				echo "<input type='hidden' name='action' id='action' value='macban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban MAC'>";
@@ -88,7 +88,7 @@ final class UserList extends AdminPage {
 				echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 				echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 				echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
-				if(in_array($nasdata['gsbrcd'], array_column($this->banned_profiles, 'gsbrcd'))){
+				if(in_array($nasdata['gsbrcd'], array_column($this->banned_profiles, 'banned_id'))){
 					echo "<input type='hidden' name='action' id='action' value='profileunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='submit' class='btn btn-primary' value='Unban Profile'>";
 				} else {
 					echo "<input type='hidden' name='action' id='action' value='profileban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban Profile'>";
@@ -104,7 +104,7 @@ final class UserList extends AdminPage {
 				echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 				echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 				echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
-				if(in_array($nasdata['bssid'], array_column($this->banned_aps, 'bssid'))){
+				if(in_array($nasdata['bssid'], array_column($this->banned_aps, 'banned_id'))){
 					echo "<input type='hidden' name='action' id='action' value='apunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['bssid']}'><input type='submit' class='btn btn-primary' value='Unban W. AP'>";
 				} else {
 					echo "<input type='hidden' name='action' id='action' value='apban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['bssid']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban W. AP'>";

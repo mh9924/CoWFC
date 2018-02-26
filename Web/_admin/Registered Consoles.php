@@ -5,6 +5,7 @@ final class RegisteredConsoles extends AdminPage {
 	private $reg_consoles = array();
 	private $pen_consoles = array();
 	private $banned_consoles = array();
+	private $abused_consoles = array();
 	private $identifierActions = array(
 		"add" => "regAndActivateConsole",
 		"act" => "activateConsole",
@@ -28,6 +29,7 @@ final class RegisteredConsoles extends AdminPage {
 		$this->reg_consoles = $this->site->database->getRegisteredConsoles();
 		$this->pen_consoles = $this->site->database->getPendingConsoles();
 		$this->banned_consoles = $this->site->database->getBannedConsoles();
+		$this->abused_consoles = $this->site->database->getAbusedConsoles();
 	}
 	
 	private function buildRegisteredTable(): void {
@@ -69,6 +71,21 @@ final class RegisteredConsoles extends AdminPage {
 			}
 		}
 		echo "</table>";
+	}
+
+	private function buildAbusedTable(): void {
+		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
+		echo '<thead><tr>';
+		echo "<th class='sorting-asc'>MAC Address</th>";
+		echo '</tr></thead>';
+		foreach($this->abused_consoles as $row){
+			echo "<tr>";
+			echo "<td>";
+			echo $row[0];
+			echo "</td>";
+			echo "</tr>";
+			
+		}
 	}
 	
 	private function buildBannedTable(): void {
@@ -144,6 +161,17 @@ final class RegisteredConsoles extends AdminPage {
 			<div class="card-body">
 				<div class="table-responsive">
 					<?php $this->buildBannedTable(); ?>
+				</div>
+			</div>
+		</div>
+		<div class="card mb-3">
+			<div class="card-header">
+				<i class="fa fa-table"></i>
+				Abused Consoles
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<?php $this->buildAbusedTable(); ?>
 				</div>
 			</div>
 		</div>
