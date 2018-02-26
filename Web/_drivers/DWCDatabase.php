@@ -71,12 +71,38 @@ class DWCDatabase extends Database {
 	$stmt->bindParam(':gsbrcd', $gsbrcd);
 	$stmt->execute();
 	}
+
+	private function banAP (string $ap, string $reason='none', int $time=0): void {
+		$ubtime = time() + $time;
+		if($time == 0) $ubtime = 99999999999;
+		$sql = "INSERT INTO ap_banned (bssid, timestamp, reason, ubtime) VALUES (:bssid, :timestamp, :reason, :ubtime)";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->bindParam(':bssid', $ap);
+		$stmt->bindValue(':timestamp', time());
+		$stmt->bindParam(':reason', $reason);
+		$stmt->bindParam(':ubtime', $ubtime);
+		$stmt->execute();
+	}
+
+	public function unbanAP(string $ap): void {
+		$sql = "DELETE FROM ap_banned WHERE bssid = :bssid";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->bindParam(':bssid', $ap);
+		$stmt->execute();
+	}
 	
 	public function unbanIP(string $ip): void {
 		$sql = "DELETE FROM ip_banned WHERE ipaddr = :ipaddr";
 		$stmt = $this->getConn()->prepare($sql);
 		$stmt->bindParam(':ipaddr', $ip);
 		$stmt->execute();
+	}
+
+	public function getBannedAPs(): array {
+		$sql = "SELECT * FROM ap_banned where ubtime > ".time();
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetchAll();
 	}
 	
 	public function getIPBans(): array {
