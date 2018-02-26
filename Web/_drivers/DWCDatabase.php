@@ -67,10 +67,10 @@ class DWCDatabase extends Database {
 	}
 
 	public function unbanProfile (string $gsbrcd): void {
-	$sql = "DELETE FROM profile_banned WHERE gsbrcd = :gsbrcd";
-	$stmt = $this->getConn()->prepare($sql);
-	$stmt->bindParam(':gsbrcd', $gsbrcd);
-	$stmt->execute();
+		$sql = "DELETE FROM profile_banned WHERE gsbrcd = :gsbrcd";
+		$stmt = $this->getConn()->prepare($sql);
+		$stmt->bindParam(':gsbrcd', $gsbrcd);
+		$stmt->execute();
 	}
 
 	private function banAP (string $ap, string $reason='none', int $time=0): void {
