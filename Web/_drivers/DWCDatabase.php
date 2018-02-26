@@ -53,6 +53,7 @@ class DWCDatabase extends Database {
 		$stmt->bindParam(':ubtime', $ubtime);
 		$stmt->execute();
 	}
+
 	private function banProfile (string $profile, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;
