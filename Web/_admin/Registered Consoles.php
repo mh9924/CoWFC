@@ -8,7 +8,6 @@ final class RegisteredConsoles extends AdminPage {
 	private $abused_consoles = array();
 	private $identifierActions = array(
 		"add" => "regAndActivateConsole",
-		"act" => "activateConsole",
 		"rm" => "unregisterConsole",
 		"unban" => "unbanConsole"
 	);
@@ -27,7 +26,6 @@ final class RegisteredConsoles extends AdminPage {
 			}
 		}
 		$this->reg_consoles = $this->site->database->getRegisteredConsoles();
-		$this->pen_consoles = $this->site->database->getPendingConsoles();
 		$this->banned_consoles = $this->site->database->getBannedConsoles();
 		$this->abused_consoles = $this->site->database->getAbusedConsoles();
 	}
@@ -35,7 +33,7 @@ final class RegisteredConsoles extends AdminPage {
 	private function buildRegisteredTable(): void {
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;" id="dataTable">';
 		echo '<thead><tr>';
-		echo "<th class='sorting-asc'>MAC Address</th><th>Unregister</th><th>Ban</th>";
+		echo "<th class='sorting-asc'>MAC Address</th><th>Platform</th><th>Serial Number (Wii)</th><th>Unregister</th><th>Ban</th>";
 		echo '</tr></thead>';
 		foreach($this->reg_consoles as $row){
 			echo "<tr>";
@@ -43,28 +41,16 @@ final class RegisteredConsoles extends AdminPage {
 			echo $row[0];
 			echo "</td>";
 			echo "<td>";
+			echo $row[2];
+			echo "</td>";
+			echo "<td>";
+			echo $row[1];
+			echo "</td>";
+			echo "<td>";
 			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='rm'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Unregister'></form>";
 			echo "</td>";
 			echo "<td>";
 			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input class='form-control' style='width:225px;' type='text' name='reason' id='reason' placeholder='Reason'><input type='submit' class='btn btn-primary' value='Ban'></form>";
-			echo "</td>";
-			echo "</tr>";
-		}
-		echo "</table>";
-	}
-	
-	private function buildPendingTable(): void {
-		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
-		echo '<thead><tr>';
-		echo "<th class='sorting-asc'>MAC Address</th><th>Activate</th>";
-		echo '</tr></thead>';
-		foreach($this->pen_consoles as $row){
-			echo "<tr>";
-			echo "<td>";
-			echo $row[0];
-			echo "</td>";
-			echo "<td>";
-			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='act'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Activate'></form>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -129,17 +115,6 @@ final class RegisteredConsoles extends AdminPage {
 		<form action='' method='post'>Register and Activate MAC: <input type='hidden' name='action' id='action' value='add'><input class='form-control' style='width:175px;' type='text' name='identifier' id='identifier' maxlength='12'><input type='submit' class='btn btn-primary' value='Register & Activate'></form>
 		<form action='' method='post'>Ban MAC address: <input type='hidden' name='action' id='action' value='ban'><input class='form-control' style='width:175px;' type='text' name='identifier' id='identifier' maxlength='12'><input class='form-control' style='width:225px;' type='text' name='reason' id='reason' placeholder='Reason'><input type='submit' class='btn btn-primary' value='Ban'></form>
 
-		<div class="card mb-3">
-			<div class="card-header">
-				<i class="fa fa-table"></i>
-				Pending Consoles
-			</div>
-			<div class="card-body">
-				<div class="table-responsive">
-					<?php $this->buildPendingTable(); ?>
-				</div>
-			</div>
-		</div>
 		<div class="card mb-3">
 			<div class="card-header">
 				<i class="fa fa-table"></i>
