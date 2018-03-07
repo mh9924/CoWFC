@@ -119,21 +119,7 @@ class DWCDatabase extends Database {
 		$stmt->execute();
 		return $stmt->fetchAll();
 	}
-	
-	public function regAndActivateConsole(string $console): void {
-		$sql = "INSERT INTO consoles (macadr,enabled) VALUES (:macadr,1)";
-		$stmt = $this->getConn()->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-	}
 
-	public function activateConsole(string $console): void {
-		$sql = "UPDATE consoles SET enabled = '1' WHERE macadr = ':macadr'";
-		$stmt = $this->getConn()->prepare($sql);
-		$stmt->bindParam(':macadr', $console);
-		$stmt->execute();
-	}
-	
 	private function banConsole(string $console, string $reason='none', int $time=0): void {
 		$ubtime = time() + $time;
 		if($time == 0) $ubtime = 99999999999;

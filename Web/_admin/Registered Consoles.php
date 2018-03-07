@@ -3,11 +3,9 @@ include($_SERVER["DOCUMENT_ROOT"] . '/_site/AdminPage.php');
 
 final class RegisteredConsoles extends AdminPage {
 	private $reg_consoles = array();
-	private $pen_consoles = array();
 	private $banned_consoles = array();
 	private $abused_consoles = array();
 	private $identifierActions = array(
-		"add" => "regAndActivateConsole",
 		"rm" => "unregisterConsole",
 		"unban" => "unbanConsole"
 	);
@@ -112,7 +110,6 @@ final class RegisteredConsoles extends AdminPage {
 		<ol class="breadcrumb">
 		  <li class="breadcrumb-item active"><?php echo $this->meta_title; ?></li>
 		</ol>
-		<form action='' method='post'>Register and Activate MAC: <input type='hidden' name='action' id='action' value='add'><input class='form-control' style='width:175px;' type='text' name='identifier' id='identifier' maxlength='12'><input type='submit' class='btn btn-primary' value='Register & Activate'></form>
 		<form action='' method='post'>Ban MAC address: <input type='hidden' name='action' id='action' value='ban'><input class='form-control' style='width:175px;' type='text' name='identifier' id='identifier' maxlength='12'><input class='form-control' style='width:225px;' type='text' name='reason' id='reason' placeholder='Reason'><input type='submit' class='btn btn-primary' value='Ban'></form>
 
 		<div class="card mb-3">
