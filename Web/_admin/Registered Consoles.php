@@ -59,16 +59,14 @@ final class RegisteredConsoles extends AdminPage {
 		echo "<th class='sorting-asc'>MAC Address</th><th>Activate</th>";
 		echo '</tr></thead>';
 		foreach($this->pen_consoles as $row){
-			if(!in_array($row, $this->reg_consoles)){
-				echo "<tr>";
-				echo "<td>";
-				echo $row[0];
-				echo "</td>";
-				echo "<td>";
-				echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='act'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Activate'></form>";
-				echo "</td>";
-				echo "</tr>";
-			}
+			echo "<tr>";
+			echo "<td>";
+			echo $row[0];
+			echo "</td>";
+			echo "<td>";
+			echo "<form action='' method='post'><input type='hidden' name='action' id='action' value='act'><input type='hidden' name='identifier' id='identifier' value='{$row[0]}'><input type='submit' class='btn btn-primary' value='Activate'></form>";
+			echo "</td>";
+			echo "</tr>";
 		}
 		echo "</table>";
 	}
