@@ -119,6 +119,7 @@ final class Stats extends Page {
 						<li id="stat"><?php echo $this->site->database->getNumBannedProfiles(); ?> Profiles Currently Banned</li>
 						<li id="stat"><?php echo $this->site->database->getNumBannedConsoles(); ?> Consoles Currently Banned</li>
 						<li id="stat"><?php echo $this->site->database->getProfiles(); ?> Total Profiles</li>
+						<li id="stat"><?php echo $this->site->database->getNumOfAllBans(); ?> All-time bans</li>
 						<li id="stat"><?php echo $this->site->database->getActiveGames(); ?> Games Enabled</li>
 					</ul>
 				</p>
