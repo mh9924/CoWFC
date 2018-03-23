@@ -12,6 +12,7 @@ final class GameWhitelist extends AdminPage {
 		if(isset($_POST["action"], $_POST["identifier"]))
 			if(array_key_exists($_POST["action"], $this->identifierActions))
 				$this->site->database->{$this->identifierActions[$_POST["action"]]}($_POST["identifier"]);
+		
 		$this->whitelist = $this->site->database->getWhitelist();
 		// $this->titles = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_admin/GameWhitelist/games.json"), true);
 	}
@@ -21,6 +22,7 @@ final class GameWhitelist extends AdminPage {
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>gamecd</th><th>Un-whitelist</th><th>Game</th><th>Platform</th>";
 		echo '</tr></thead>';
+		
 		foreach($this->whitelist as $row){
 			echo "<tr>";
 			echo "<td>";
@@ -37,6 +39,7 @@ final class GameWhitelist extends AdminPage {
 			echo "</td>";
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
