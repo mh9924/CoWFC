@@ -22,6 +22,7 @@ final class UserList extends AdminPage {
 				case 'apunban': $this->site->database->unbanAP($_POST['identifier']);break;
 			}
 		}
+		
 		$this->users = $this->site->database->getUsers();
 		$this->banned_list = $this->site->database->getBannedList();
 		$this->banned_consoles = $this->site->database->getBannedConsoles();
@@ -32,6 +33,7 @@ final class UserList extends AdminPage {
 	private function calcFC(int $profile_id, string $game_id='RMCJ'): string {
 		$csum = md5(pack('V',$profile_id).strrev($game_id),true);
 		$out = $profile_id | ( ord($csum) & 0xfe ) << 31;
+		
 		return str_pad($out, 12, '0', STR_PAD_LEFT);
 	}
 	
@@ -40,22 +42,28 @@ final class UserList extends AdminPage {
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>Name</th><th>Action</th><th>Action</th><th>Action</th><th>Action</th><th>gameid</th><th>E</th><th>pid</th><th>gsbrcd</th><th>userid</th><th>IP Address</th><th>Console MAC</th><th>Friend Code</th><th>Wii Friend Code</th><th>Console Serial Number (Wii ONLY)</th>";
 		echo '</tr></thead>';
+		
 		foreach($this->users as $row){
 			$nasdata = json_decode($row[2], true);
 			$is_console = $row[4];
+			
 			if(array_key_exists('ingamesn', $nasdata)){
 				$ingamesn = $nasdata['ingamesn'];
 			} elseif(array_key_exists('devname', $nasdata)){
 				$ingamesn = $nasdata['devname'];
 			}
+			
 			if(isset($ingamesn)){
 				$ingamesn = base64_decode($ingamesn);
+				
 				if($is_console){
 					$ingamesn = @iconv('UTF-16BE', 'UTF-8', $ingamesn);
 				} else {
 					$ingamesn = @iconv('UTF-16LE', 'UTF-8', $ingamesn);
 				}
+				
 			}
+			
 			echo "<tr>";
 			echo "<td>".htmlentities($ingamesn)."</td>";
 			echo "<td>";
@@ -63,11 +71,13 @@ final class UserList extends AdminPage {
 			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
+			
 			if(in_array($nasdata['ipaddr'], $this->banned_list)){
 				echo "<input type='hidden' name='action' id='action' value='unban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='submit' class='btn btn-primary' value='Unban'>";
 			} else {
 				echo "<input type='hidden' name='action' id='action' value='ban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['ipaddr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban'>";
 			}
+			
 			echo "</form>";
 			echo "</td>";
 			echo "<td>";
@@ -75,48 +85,58 @@ final class UserList extends AdminPage {
 			echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 			echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 			echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
+			
 			if(in_array($nasdata['macadr'], array_column($this->banned_consoles, 'macadr'))){
 				echo "<input type='hidden' name='action' id='action' value='macunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='submit' class='btn btn-primary' value='Unban MAC'>";
 			} else {
 				echo "<input type='hidden' name='action' id='action' value='macban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['macadr']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban MAC'>";
 			}
+			
 			echo "</form>";
 			echo "</td>";
+			
 			if(isset($nasdata['gsbrcd'])){
 				echo "<td>";
 				echo "<form action='' method='post'>";
 				echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 				echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 				echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
+				
 				if(in_array($nasdata['gsbrcd'], array_column($this->banned_profiles, 'gsbrcd'))){
 					echo "<input type='hidden' name='action' id='action' value='profileunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='submit' class='btn btn-primary' value='Unban Profile'>";
 				} else {
 					echo "<input type='hidden' name='action' id='action' value='profileban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['gsbrcd']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban Profile'>";
 				}
+				
 				echo "</form>";
 				echo "</td>";
 			} else {
 				echo "<td>N/A</td>";
 			}
+			
 			if(isset($nasdata['bssid'])){
 				echo "<td>";
 				echo "<form action='' method='post'>";
 				echo "<input type='hidden' name='sn' id='sn' value='{$ingamesn}'>";
 				echo "<input type='hidden' name='fc' id='fc' value='".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."'>";
 				echo "<input type='hidden' name='pid' id='pid' value='{$row[0]}'>";
+				
 				if(in_array($nasdata['bssid'], array_column($this->banned_aps, 'bssid'))){
 					echo "<input type='hidden' name='action' id='action' value='apunban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['bssid']}'><input type='submit' class='btn btn-primary' value='Unban W. AP'>";
 				} else {
 					echo "<input type='hidden' name='action' id='action' value='apban'><input type='hidden' name='identifier' id='identifier' value='{$nasdata['bssid']}'><input type='text' class='form-control' placeholder='Reason' name='reason' id='reason' style='width: 100px;'><input type='text' class='form-control' placeholder='# minutes' name='time' id='time' style='width: 100px;' value='0' maxlength='11'><input type='submit' class='btn btn-primary' value='Ban W. AP'>";
 				}
+				
 				echo "</form>";
 				echo "</td>";
 			} else {
 				echo "<td>N/A</td>";
 			}
+			
 			echo "<td>{$row[3]}</td>";
 			echo "<td>{$row[1]}</td>";
 			echo "<td>{$row[0]}</td>";
+			
 			if(isset($nasdata['gsbrcd']))
 				echo "<td>{$nasdata['gsbrcd']}</td>";
 			else 
@@ -126,6 +146,7 @@ final class UserList extends AdminPage {
 			echo "<td>{$nasdata['ipaddr']}</td>";
 			echo "<td>{$nasdata['macadr']}</td>";
 			echo "<td>".substr(chunk_split($this->calcFC((int)$row[0], $row[3]),4,'-'),0,-1)."</td>";
+			
 			if(isset($nasdata['cfc']) && isset($nasdata['csnum'])){ // Wii only
 				echo "<td>".substr(chunk_split($nasdata['cfc'], 4, '-'),0,-1)."</td>";
 				echo "<td>{$nasdata['csnum']}</td>";
@@ -133,8 +154,10 @@ final class UserList extends AdminPage {
 				echo "<td>N/A</td>";
 				echo "<td>N/A</td>";
 			}
+			
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
