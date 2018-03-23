@@ -25,6 +25,7 @@ final class RegisteredConsoles extends AdminPage {
 					break;
 			}
 		}
+		
 		$this->reg_consoles = $this->site->database->getRegisteredConsoles();
 		$this->pen_consoles = $this->site->database->getPendingConsoles();
 		$this->banned_consoles = $this->site->database->getBannedConsoles();
@@ -35,6 +36,7 @@ final class RegisteredConsoles extends AdminPage {
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>MAC Address</th><th>Unregister</th><th>Ban</th>";
 		echo '</tr></thead>';
+		
 		foreach($this->reg_consoles as $row){
 			echo "<tr>";
 			echo "<td>";
@@ -48,6 +50,7 @@ final class RegisteredConsoles extends AdminPage {
 			echo "</td>";
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
@@ -56,6 +59,7 @@ final class RegisteredConsoles extends AdminPage {
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>MAC Address</th><th>Activate</th>";
 		echo '</tr></thead>';
+		
 		foreach($this->pen_consoles as $row){
 			if(!in_array($row, $this->reg_consoles)){
 				echo "<tr>";
@@ -68,6 +72,7 @@ final class RegisteredConsoles extends AdminPage {
 				echo "</tr>";
 			}
 		}
+		
 		echo "</table>";
 	}
 	
@@ -76,6 +81,7 @@ final class RegisteredConsoles extends AdminPage {
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>MAC Address</th><th>Unban MAC</th><th>Timestamp</th><th>Until</th><th>Reason</th>";
 		echo '</tr></thead>';
+		
 		foreach($this->banned_consoles as $row){
 			echo "<tr>";
 			echo "<td>";
@@ -97,6 +103,7 @@ final class RegisteredConsoles extends AdminPage {
 			echo "</td>";
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
