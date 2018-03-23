@@ -5,11 +5,13 @@ final class FcBans extends AdminPage {
 	private $fc_bans = array();
 	
 	private function buildFCTable(): void {
+		$this->fc_bans = $this->site->database->getFCBans();
+		
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>cfc</th><th>Ban/Unban cfc</th>";
 		echo '</tr></thead>';
-		$this->fc_bans = $this->site->database->getFCBans();
+		
 		foreach($this->fc_bans as $row){
 			echo "<tr>";
 			echo "<td>";
@@ -17,6 +19,7 @@ final class FcBans extends AdminPage {
 			echo "</td>";
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
