@@ -20,6 +20,7 @@ final class IpBans extends AdminPage {
 					break;
 			}
 		}
+		
 		$this->ip_bans = $this->site->database->getIPBans();
 	}
 	
@@ -28,6 +29,7 @@ final class IpBans extends AdminPage {
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>IP Address</th><th>Unban IP</th><th>Timestamp</th><th>Until</th><th>Reason</th>";
 		echo '</tr></thead>';
+		
 		foreach($this->ip_bans as $row){
 			echo "<tr>";
 			echo "<td>";
@@ -50,6 +52,7 @@ final class IpBans extends AdminPage {
 			echo "</td>";
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
