@@ -41,7 +41,7 @@ abstract class AdminPage extends Page {
 			Password BINARY(60), 
 			Rank INT(1),
 			PRIMARY KEY (id))
-			");
+		");
 		
 		$stmt->execute();
 	}
