@@ -14,27 +14,35 @@ abstract class AdminPage extends Page {
 		$this->site = $site;
 		session_start();
 		$this->initMySQL();
+		
 		if(isset($_SESSION['username']))
 			$this->logged_in = true;
 			# $this->user = new User($_SESSION);
+		
 		if(!$this->logged_in){
 			include($_SERVER["DOCUMENT_ROOT"] . "/_admin/Auth/Login.php");
 			return new Login($this);
 		}
+		
 		parent::__construct($site);
 	}
 	
 	private function initMySQL(): void {
-		$this->udatabase = new Database($this->site);
 		$config = $this->site->config['admin'];
+		
+		$this->udatabase = new Database($this->site);
 		$this->udatabase->connect($config['db_host'],$config['db_name'],$config['db_user'],$config['db_pass']);
 		$this->udatabase = $this->udatabase->getConn();
-		$stmt = $this->udatabase->prepare("CREATE TABLE IF NOT EXISTS users 
-											(id INTEGER AUTO_INCREMENT, 
-											Username VARCHAR(20), 
-											Password BINARY(60), 
-											Rank INT(1),
-											PRIMARY KEY (id))");
+		
+		$stmt = $this->udatabase->prepare("
+		        CREATE TABLE IF NOT EXISTS users 
+			(id INTEGER AUTO_INCREMENT, 
+			Username VARCHAR(20), 
+			Password BINARY(60), 
+			Rank INT(1),
+			PRIMARY KEY (id))
+			");
+		
 		$stmt->execute();
 	}
 	
