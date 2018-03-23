@@ -15,8 +15,10 @@ abstract class Page {
 		$this->meta_title = $meta_title;
 		$this->header = new Header($this);
 		$this->footer = new Footer($this);
+		
 		if (empty($this->meta_title))
 			$this->meta_title = trim(preg_replace("/(?<!\ )[A-Z]/", " $0", get_class($this)));
+		
 		$this->buildHeader();
 		$this->buildPage();
 		$this->buildFooter();
@@ -25,6 +27,7 @@ abstract class Page {
 	protected function buildHeader(): void {
 		if ($this->site->config["main"]["debug"])
 			echo "CoWFC is running in debug mode. Errors will be visible.";
+		
 		$this->header->build();
 	}
 	
