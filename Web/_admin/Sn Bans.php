@@ -5,11 +5,13 @@ final class SnBans extends AdminPage {
 	private $sn_bans = array();
 	
 	private function buildSNTable(): void {
+		$this->sn_bans = $this->site->database->getSNBans();
+		
 		echo '<table class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" style="width: 100%;">';
 		echo '<thead><tr>';
 		echo "<th class='sorting-asc'>csnum</th><th>Ban/Unban csnum</th>";
 		echo '</tr></thead>';
-		$this->sn_bans = $this->site->database->getSNBans();
+		
 		foreach($this->sn_bans as $row){
 			echo "<tr>";
 			echo "<td>";
@@ -17,6 +19,7 @@ final class SnBans extends AdminPage {
 			echo "</td>";
 			echo "</tr>";
 		}
+		
 		echo "</table>";
 	}
 	
