@@ -30,6 +30,7 @@ class PageController {
 				$this->mode = "admin";
 			}
 		}
+		
 		$this->pages = scandir("_{$this->mode}");
 		foreach($this->pages as $i=>$page){
 			if (is_dir($_SERVER["DOCUMENT_ROOT"] . "/_{$this->mode}/{$page}")){
@@ -57,10 +58,12 @@ class PageController {
 			$page_class = str_replace(' ', '', $this->requested_page);
 			return new $page_class($this);
 		}
+		
 		if($this->mode == 'pages'){
 			include("_pages/Error/NotFound.php");
 			return new NotFound($this, "Error");
 		}
+		
 		die("Page not found.");
 	}
 }
